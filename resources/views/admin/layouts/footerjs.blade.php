@@ -24,7 +24,9 @@
 
 <!-- SweetAlert -->
 <script src="{{ asset('assets/js/plugins/sweetalert/sweetalert.min.js') }}"></script>
-
+<script>
+  var csrf_token = "{{ csrf_token() }}";
+</script>
 
   
     @stack('scripts')

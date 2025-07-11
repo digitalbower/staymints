@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\Auth\AdminAuthController;
 use App\Http\Controllers\Admin\FooterController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\PackageController;
+use App\Http\Controllers\Admin\SeoManagementController;
 use App\Http\Controllers\User\HomeController as UserHomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,5 +29,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('users', AdminUserController::class);
         Route::resource('footers', FooterController::class);
         Route::resource('packages', PackageController::class);
+        Route::post('/packages/change-status', [PackageController::class, 'changeStatus'])->name('packages.status');
+        Route::resource('seo', SeoManagementController::class);
     });
 });

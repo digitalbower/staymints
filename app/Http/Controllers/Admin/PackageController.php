@@ -279,4 +279,12 @@ class PackageController extends Controller
         $package->delete(); 
         return redirect()->route('admin.packages.index')->with('success', 'Package deleted successfully!');
     }
+    public function changeStatus(Request $request)
+    { 
+        $package = Package::findOrFail($request->id); 
+        $package->status = $request->status;
+        $package->save();
+
+        return response()->json(['message' => 'Package status updated successfully!']);
+    }
 }

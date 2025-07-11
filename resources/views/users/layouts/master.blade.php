@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="description" content="" />
 <meta name="keywords" content="" />
-<link rel="apple-touch-icon" sizes="180x180" href="assets/image/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="{{asset('assets/user/image/favicon.ico')}}" />
 <title>TRAVEL WEBSITE || HOME</title>
 @include('users.layouts.headercss')
 </head>

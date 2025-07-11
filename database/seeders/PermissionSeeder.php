@@ -26,6 +26,10 @@ class PermissionSeeder extends Seeder
             'create_package',
             'edit_package',
             'delete_package',
+            'changestatus_packages',
+            'view_seo',
+            'create_seo',
+            'edit_seo',
         ];
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);

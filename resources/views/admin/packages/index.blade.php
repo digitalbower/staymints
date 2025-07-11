@@ -46,6 +46,13 @@
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $package->package_name }}</td>
                                 <td class="d-flex align-items-center gap-2">
+                                    @if(auth()->guard('admin')->user()->hasPermission('changestatus_packages'))
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input toggle-status" type="checkbox" 
+                                                data-id="{{ $package->id }}" 
+                                                {{ $package->status ? 'checked' : '' }}>
+                                        </div>
+                                    @endif
                                     <!-- Edit Button -->
                                     @if(auth()->guard('admin')->user()->hasPermission('edit_package'))
                                     <a href="{{ route('admin.packages.edit', $package) }}" class="btn btn-warning btn-sm">Edit</a>
@@ -72,3 +79,43 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+<script>
+    $('.toggle-status').change(function () {
+        var packageId = $(this).data('id');
+        var newStatus = $(this).is(':checked') ? 1 : 0;
+    
+        $.ajax({
+            url: "/admin/packages/change-status",
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": csrf_token, 
+            },
+            data: JSON.stringify({
+                id: packageId,
+                status: newStatus
+            }),
+            success: function (response) {
+                // Display the success message in a specific div
+                $('#status-message').html(`
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        ${response.message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `);
+            },
+            error: function (xhr) {
+                let errorMessage = "Something went wrong! Please try again.";
+                $('#status-message').html(`
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        ${errorMessage}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `);
+            }
+        });
+    });
+</script>
+    
+@endpush
