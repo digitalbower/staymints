@@ -14,9 +14,9 @@ class UnitTypeSeeder extends Seeder
     public function run(): void
     {
          $unitTypes = [
-            ['type_name' => 'Per Person', 'status' => 1, 'created_at' => now(), 'updated_at' => now()],
-            ['type_name' => 'Per Pack', 'status' => 1, 'created_at' => now(), 'updated_at' => now()],
-            ['type_name' => 'Per Group', 'status' => 1, 'created_at' => now(), 'updated_at' => now()],
+            ['type_name' => 'Person', 'status' => 1, 'created_at' => now(), 'updated_at' => now()],
+            ['type_name' => 'Pack', 'status' => 1, 'created_at' => now(), 'updated_at' => now()],
+            ['type_name' => 'Group', 'status' => 1, 'created_at' => now(), 'updated_at' => now()],
         ];
 
         

@@ -48,11 +48,19 @@
         </li>
         @endif
         @endif
-        @if(auth()->guard('admin')->user()->hasPermission('view_packages') || (auth()->guard('admin')->user()->hasPermission('view_seo')))
+        @if(auth()->guard('admin')->user()->hasPermission('view_packages') || (auth()->guard('admin')->user()->hasPermission('view_seo'))||auth()->guard('admin')->user()->hasPermission('view_categories'))
         <li class="pc-item pc-caption">
           <label>Other</label>
           <i data-feather="sidebar"></i>
         </li>
+        @if(auth()->guard('admin')->user()->hasPermission('view_categories'))
+        <li class="pc-item pc-hasmenu">
+          <a href="{{route('admin.categories.index')}}" class="pc-link">
+            <span class="pc-micon"> <i data-feather="feather"></i></span>
+            <span class="pc-mtext">Categories</span>
+          </a>
+        </li>
+        @endif
         @if(auth()->guard('admin')->user()->hasPermission('view_packages'))
         <li class="pc-item pc-hasmenu">
           <a href="{{route('admin.packages.index')}}" class="pc-link">

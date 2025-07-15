@@ -48,5 +48,13 @@ class Package extends Model
 
         return $this->hasMany(PackageItinerary::class);
     }
-    
+    public function tag(){
+        return $this->belongsTo(Tag::class);
+    }
+    public function country(){
+        return $this->belongsTo(Country::class);
+    }
+    public function type(){
+        return $this->belongsTo(UnitType::class,'unit_type_id');
+    }
 }

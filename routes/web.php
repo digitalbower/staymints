@@ -2,11 +2,13 @@
 
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\Auth\AdminAuthController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\FooterController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Admin\SeoManagementController;
 use App\Http\Controllers\User\HomeController as UserHomeController;
+use App\Http\Controllers\User\NewsletterController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [UserHomeController::class, 'index'])->name('home.index');
@@ -16,7 +18,11 @@ Route::get('/login', [UserHomeController::class, 'login'])->name('home.login');
 Route::get('/preview', [UserHomeController::class, 'preview'])->name('home.preview');
 Route::get('/packages', [UserHomeController::class, 'packages'])->name('home.packages');
 Route::get('/package-details', [UserHomeController::class, 'packageDetail'])->name('home.package_details');
+Route::post('/subscribe', [NewsletterController::class, 'subscribe'])->name('subscribe');
+Route::prefix('user')->name('user.')->group(function () {
+    Route::get('/package/search', [UserHomeController::class, 'packageSearch'])->name('package.search');
 
+});
 Route::prefix('admin')->name('admin.')->group(function () {
     // Admin Authentication
     Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('login');
@@ -31,5 +37,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('packages', PackageController::class);
         Route::post('/packages/change-status', [PackageController::class, 'changeStatus'])->name('packages.status');
         Route::resource('seo', SeoManagementController::class);
+        Route::resource('categories', CategoryController::class);
+        Route::post('/categories/change-status', [CategoryController::class, 'changeStatus'])->name('categories.status');
     });
 });

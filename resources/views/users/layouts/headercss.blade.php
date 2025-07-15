@@ -16,4 +16,6 @@
 <link rel="stylesheet" href="{{asset('assets/user/css/intlTelInput.css')}}" />
 <link rel="stylesheet" href="{{asset('assets/user/css/main.css')}}" />
 <link rel="stylesheet" href="{{asset('assets/user/css/new.css')}}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 @stack('styles')

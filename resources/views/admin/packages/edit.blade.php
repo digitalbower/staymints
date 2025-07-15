@@ -198,7 +198,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="duration" class="form-label">Duration</label>
-                    <input type="text" class="form-control" id="duration" name="duration" value="{{$package->duration }}">
+                    <input type="number" class="form-control" id="duration" name="duration" value="{{$package->duration }}">
                 </div>
                 <div class="mb-3">
                     <label for="group_size" class="form-label">Group size</label>

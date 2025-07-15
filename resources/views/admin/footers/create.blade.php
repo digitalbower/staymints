@@ -40,7 +40,6 @@
                         <option value="Quick Links">Quick Links</option>
                         <option value="Payment Partners">Payment Partners</option>
                         <option value="Follow on Us">Follow on Us</option>
-
                     </select>
                 </div>
                 <div class="mb-3">
@@ -55,16 +54,16 @@
                     <label for="icon" class="form-label">Icon</label>
                     <select name="icon" class="form-control">
                         <option value="">-- Select Icon --</option>
-                        <option value="fab fa-facebook text-white" {{ old('icon') == "fab fa-facebook text-white" ? 'selected' : '' }}>Facebook</option>
-                        <option value="fab fa-twitter text-white" {{ old('icon') == "fab fa-twitter text-white" ? 'selected' : '' }}>Twitter</option>
-                        <option value="fab fa-linkedin text-white" {{ old('icon') == "fab fa-linkedin text-white" ? 'selected' : '' }}>LinkedIn</option>
-                        <option value="fab fa-pinterest text-white" {{ old('icon') == "fab fa-pinterest text-white" ? 'selected' : '' }}>Pinterest</option>
+                        <option value="fa-brands fa-facebook-f" {{ old('icon') == "fa-brands fa-facebook-f" ? 'selected' : '' }}>Facebook</option>
+                        <option value="fa-brands fa-twitter" {{ old('icon') == "fa-brands fa-twitter" ? 'selected' : '' }}>Twitter</option>
+                        <option value="fa-brands fa-linkedin-in" {{ old('icon') == "fa-brands fa-linkedin-in" ? 'selected' : '' }}>LinkedIn</option>
+                        <option value="fa-brands fa-pinterest-p" {{ old('icon') == "fa-brands fa-pinterest-p" ? 'selected' : '' }}>Pinterest</option>
 
-                        <option value="https://img.icons8.com/?size=100&id=13611&format=png&color=000000" {{ old('icon') == "https://img.icons8.com/?size=100&id=13611&format=png&color=000000" ? 'selected' : '' }}>Paypal</option>
-                        <option value="https://img.icons8.com/?size=100&id=61469&format=png&color=000000" {{ old('icon') == "https://img.icons8.com/?size=100&id=61469&format=png&color=000000" ? 'selected' : '' }}>Apple Pay</option>
-                        <option value="https://img.icons8.com/?size=100&id=63192&format=png&color=000000" {{ old('icon') == "https://img.icons8.com/?size=100&id=63192&format=png&color=000000" ? 'selected' : '' }}>Bitcoin</option>
-                        <option value="https://img.icons8.com/?size=100&id=13608&format=png&color=000000" {{ old('icon') == "https://img.icons8.com/?size=100&id=13608&format=png&color=000000" ? 'selected' : '' }}>Visa</option>
-                        <option value="https://img.icons8.com/?size=100&id=EOscN9Kp2I6q&format=png&color=C850F2" {{ old('icon') == "https://img.icons8.com/?size=100&id=EOscN9Kp2I6q&format=png&color=C850F2" ? 'selected' : '' }}>Skrill</option>></option>
+                       <option value="Skrill" {{old('icon') == "Skrill" ? 'selected' : '' }}>Paypal</option>
+                        <option value="Paypal" {{old('icon') == "Paypal" ? 'selected' : '' }}>Skrill</option>
+                        <option value="Visa" {{old('icon') == "Visa" ? 'selected' : '' }}>Visa</option>
+                        <option value="Apple Pay" {{old('icon') == "Apple Pay" ? 'selected' : '' }}>Apple Pay</option>
+                        <option value="Bitcoin" {{old('icon') == "Bitcoin" ? 'selected' : '' }}>Bitcoin</option>></option>
                     
                     </select>
                 </div>
