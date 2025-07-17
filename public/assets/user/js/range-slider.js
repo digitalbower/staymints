@@ -4,6 +4,7 @@
 
 // Initialize slider:
 $(document).ready(function() {
+   const applyFiltersDebounced = debounce(applyFilters, 300);
     $('.noUi-handle').on('click', function() {
       $(this).width(50);
     });
@@ -11,7 +12,7 @@ $(document).ready(function() {
     var moneyFormat = wNumb({
       decimals: 0,
       thousand: ',',
-      prefix: '$'
+      prefix: 'AED'
     });
     noUiSlider.create(rangeSlider, {
       start: [10, 700],
@@ -24,14 +25,28 @@ $(document).ready(function() {
       connect: true
     });
     
-    // Set visual min and max values and also update value hidden form inputs
     rangeSlider.noUiSlider.on('update', function(values, handle) {
-      document.getElementById('slider-range-value1').innerHTML = values[0];
-      document.getElementById('slider-range-value2').innerHTML = values[1];
-      document.getElementsByName('min-value').value = moneyFormat.from(
-        values[0]);
-      document.getElementsByName('max-value').value = moneyFormat.from(
-        values[1]);
+      const cleanNumber = (str) => parseInt(str.replace(/[^\d]/g, ''), 10);
+
+      const minVal = cleanNumber(values[0]);
+      const maxVal = cleanNumber(values[1]);
+
+      // Defensive check in case parsing fails
+      if (isNaN(minVal) || isNaN(maxVal)) return;
+
+      document.getElementById('min-value').value = minVal;
+      document.getElementById('max-value').value = maxVal;
+
+      const formatNumber = (num) => num.toLocaleString('en-US');
+
+      document.getElementById('slider-range-value1').innerText = 'AED ' + formatNumber(minVal);
+      document.getElementById('slider-range-value2').innerText = 'AED ' + formatNumber(maxVal);
+
+    });
+
+
+    rangeSlider.noUiSlider.on('change', function(values, handle) {
+      applyFiltersDebounced(); // now called only once per interaction
     });
   });
   

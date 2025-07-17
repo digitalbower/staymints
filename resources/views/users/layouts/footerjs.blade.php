@@ -14,6 +14,7 @@
 <script src="{{asset('assets/user/js/jquery.nice-select.min.js')}}"></script>
 <script src="{{asset('assets/user/js/moment.min.js')}}"></script>
 <script src="{{asset('assets/user/js/daterangepicker.min.js')}}"></script>
+<script src="{{asset('assets/user/js/range-slider.js')}}"></script>
 <script src="{{asset('assets/user/js/select2.min.js')}}"></script>
 <script src="{{asset('assets/user/js/wow.min.js')}}"></script>
 <script src="{{asset('assets/user/js/gsap.min.js')}}"></script>

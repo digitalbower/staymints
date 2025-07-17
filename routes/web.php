@@ -21,6 +21,7 @@ Route::get('/package-details', [UserHomeController::class, 'packageDetail'])->na
 Route::post('/subscribe', [NewsletterController::class, 'subscribe'])->name('subscribe');
 Route::prefix('user')->name('user.')->group(function () {
     Route::get('/package/search', [UserHomeController::class, 'packageSearch'])->name('package.search');
+    Route::get('/package/filter', [UserHomeController::class, 'filterSearch'])->name('package.filter');
 
 });
 Route::prefix('admin')->name('admin.')->group(function () {
