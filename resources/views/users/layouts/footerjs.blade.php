@@ -14,7 +14,6 @@
 <script src="{{asset('assets/user/js/jquery.nice-select.min.js')}}"></script>
 <script src="{{asset('assets/user/js/moment.min.js')}}"></script>
 <script src="{{asset('assets/user/js/daterangepicker.min.js')}}"></script>
-<script src="{{asset('assets/user/js/range-slider.js')}}"></script>
 <script src="{{asset('assets/user/js/select2.min.js')}}"></script>
 <script src="{{asset('assets/user/js/wow.min.js')}}"></script>
 <script src="{{asset('assets/user/js/gsap.min.js')}}"></script>
@@ -22,6 +21,8 @@
 <script src="{{asset('assets/user/js/all.min.js')}}"></script>
 <script src="{{asset('assets/user/js/intlTelInput-jquery.min.js')}}"></script>
 <script src="{{asset('assets/user/js/main.js')}}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/js/all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
 $(document).ready(function() {

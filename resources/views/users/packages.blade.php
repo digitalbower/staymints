@@ -474,6 +474,7 @@
 </div>
 @endsection
 @push('scripts')
+<script src="{{asset('assets/user/js/range-slider.js')}}"></script>
 <script>
 $(document).ready(function() {
 $(".incustom_trip").click(function() {

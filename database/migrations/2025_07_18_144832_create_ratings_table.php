@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('countries', function (Blueprint $table) {
+        Schema::create('ratings', function (Blueprint $table) {
             $table->id();
-            $table->string('country_name')->nullable();
-            $table->string('country_code')->unique()->nullable();
-            $table->tinyInteger('status')->default(1);
+            $table->unsignedBigInteger('review_id')->nullable();
+            $table->foreign('review_id')->references('id')->on('reviews')->onDelete('cascade');
+            $table->string('review_type')->nullable();
+            $table->integer('review_rating')->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('countries');
+        Schema::dropIfExists('ratings');
     }
 };

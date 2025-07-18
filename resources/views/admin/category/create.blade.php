@@ -42,8 +42,11 @@
                 <textarea name="category_description" class="form-control">{{ old('category_description') }}</textarea>
             </div>
             <div class="mb-3">
-                    <label for="image" class="form-label">Category Image</label>
+                     <label for="category_image">Category Image <small>(312 × 389 px)</small></label>
+    
                     <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                    
+                    <small class="text-muted">Recommended size: 312 × 389 pixels</small>
                     
                     <!-- Image Preview -->
                     <div id="image-preview" class="mt-2 d-flex flex-wrap"></div>

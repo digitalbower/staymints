@@ -108,9 +108,9 @@
                     </select>
                 </div>
                 <div class="mb-4">
-                    <label for="sales_person_id" class="form-label">Sales person</label>
+                    <label for="sales_person_id" class="form-label">Contract Person</label>
                     <select class="form-control" name="sales_person_id" id="sales_person_id">
-                        <option value="">Select Sales person</option>
+                        <option value="">Select Contract Person</option>
                         @foreach ($sales_persons as $sales_person)
                             <option value="{{ $sales_person->id }}" {{ old('sales_person_id') == $sales_person->id ? 'selected' : '' }}>
                                 {{ $sales_person->name }}
@@ -159,6 +159,13 @@
                 
                     <div id="video-error" class="text-danger mt-1" style="display: none;">Please upload a video.</div>
                 </div>
+                <div class="mb-3">
+                    <label for="slide_show" class="form-label">Package Gallery More</label>
+                    <input type="file" class="form-control" id="slide_show" name="slide_show[]" multiple accept="image/*">
+                    <div id="slide-preview" class="mt-2 d-flex flex-wrap"></div>
+                    <div id="slide_show-error" class="text-danger mt-1" style="display: none;">Please upload at least one valid image.</div>
+                </div>
+                <input type="hidden" name="old_slide_show" id="old-slide-show" value="{{ old('slide_show') }}">
                 <div id="input-inclusions-group-wrapper">
                     <label for="included" class="form-label">Inclusions</label>
                     <div class="input-group mb-3 included">
@@ -167,7 +174,7 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label for="duration" class="form-label">Duration</label>
+                    <label for="duration" class="form-label">Duration (Nights)</label>
                     <input type="number" class="form-control" id="duration" name="duration" value="{{old('duration') }}">
                 </div>
                 <div class="mb-3">
@@ -202,6 +209,10 @@
                         <input type="text" name="extra_services[]" class="form-control" placeholder="Enter Extra services">
                         <button type="button" class="btn btn-success add-extra-services-btn">+</button>
                     </div>
+                </div>
+                <div class="mb-3">
+                    <label for="itinerary_desc" class="form-label">Itinerary Description</label>
+                    <textarea class="form-control" id="itinerary_desc" name="itinerary_desc">{{old('itinerary_desc') }}</textarea>
                 </div>
                 <div id="itinerary-wrapper">
                     <label for="included" class="form-label">Itinerary</label>
@@ -320,9 +331,12 @@
             sales_person_id: "required",
             unit_type_id: "required",
             starting_price: "required",
-            image: "required",
+            image: {
+                required: true,
+                extension: "jpg|jpeg|png"
+            },
             duration: "required",
-            group_size: "required",
+            itinerary_desc: "required",
             overview:  { 
                 required: function (textarea) {
                     // Get Summernote content
@@ -341,9 +355,11 @@
             // gallery[] validation
             "gallery[]": {
                 required: true,
-                extension: "jpg|jpeg|png|gif|svg"
+                extension: "jpg|jpeg|png"
             },
-
+            "slide_show[]": {
+                extension: "jpg|jpeg|png"
+            },
             // inclusions[]
             "inclusions[]": {
                 required: true
@@ -369,12 +385,13 @@
             sales_person_id: "Sales person is required",
             unit_type_id: "Unit type is required",
             starting_price: "Starting price is required",
-            image: "Image is required",
+            image: "Valid Image is required",
             duration: "Duration is required",
-            group_size: "Group size is required",
+            itinerary_desc: "Itinerary description is required",
             overview: "Overview is required",
             highlights: "Highlights are required",
             "gallery[]": "At least one valid image is required",
+            "slide_show[]": "Valid image is required",
             "inclusions[]": "Please add at least one inclusion",
             "included[]": "Please add at least one included item",
             "excluded[]": "Please add at least one excluded item"
@@ -520,7 +537,7 @@ $(document).on('click', '.remove-itinerary', function () {
             reader.onload = function (e) {
                 $("#images-preview").append(
                     `<div class="m-2 d-inline-block position-relative image-preview" data-index="${index}">
-                        <button type="button" class="btn-close position-absolute top-0 start-100 translate-middle remove-image" data-index="${index}" aria-label="Close"></button>
+                        <button type="button" class="btn-close position-absolute top-0 start-100 translate-middle remove-gallery-image" data-index="${index}" aria-label="Close"></button>
                         <img src="${e.target.result}" class="img-thumbnail" width="100">
                     </div>`
                 );
@@ -530,31 +547,13 @@ $(document).on('click', '.remove-itinerary', function () {
     });
 
     // **Remove selected image**
-    $(document).on("click", ".remove-image", function () {
+    $(document).on("click", ".remove-gallery-image", function () {
         let index = $(this).data("index");
         selectedFiles.splice(index, 1); // Remove from array
         $(this).parent().remove(); // Remove from preview
 
         console.log("Updated selected files:", selectedFiles);
     });
-
-
-    // ========== EXISTING IMAGE HANDLING ==========
-    window.removeExistingImage = function(index) {
-        const wrapper = document.querySelector(`#existing-images .image-wrapper[data-index='${index}']`);
-        if (wrapper) {
-            const path = wrapper.getAttribute('data-path');
-            removedExistingImages.push(path);
-            wrapper.remove();
-            document.getElementById('removed_images').value = JSON.stringify(removedExistingImages);
-        }
-    };
-    
-    $(document).on('click', '.remove-existing-image', function () {
-        const index = $(this).data('index');
-        window.removeExistingImage(index); // or directly put the logic here
-    });
-    
 
     // ========== FINAL FORM PREP ==========
 
@@ -598,5 +597,64 @@ $(document).on('click', '.remove-itinerary', function () {
         $('#image').val(''); // Reset file input
     });
 
+
+
+     let selectedSlideFiles = [];
+    let removedExistingSlideImages = [];
+
+    // ========== NEW IMAGE HANDLING ==========
+
+    // On file selection
+    $("#slide_show").on("change", function (event) {
+        let files = Array.from(event.target.files); // Convert FileList to array
+        console.log("New files:", files);
+        
+        // Append new files to the global array
+        selectedSlideFiles = [...selectedSlideFiles, ...files];
+
+        console.log("All selected files:", selectedSlideFiles);
+
+        $("#slide-preview").empty(); // Clear preview to avoid duplicates
+
+        // Display all selected files
+        selectedSlideFiles.forEach(function (file, index) {  // Use function() to access index properly
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                $("#slide-preview").append(
+                    `<div class="m-2 d-inline-block position-relative slide-preview" data-index="${index}">
+                        <button type="button" class="btn-close position-absolute top-0 start-100 translate-middle remove-slide-image" data-index="${index}" aria-label="Close"></button>
+                        <img src="${e.target.result}" class="img-thumbnail" width="100">
+                    </div>`
+                );
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+
+    // **Remove selected image**
+    $(document).on("click", ".remove-slide-image", function () {
+        let index = $(this).data("index");
+        selectedSlideFiles.splice(index, 1); // Remove from array
+        $(this).parent().remove(); // Remove from preview
+
+        console.log("Updated selected files:", selectedFiles);
+    });
+
+
+
+    // ========== FINAL FORM PREP ==========
+
+    $("form").on("submit", function (e) {
+        let fileInput = document.getElementById("slide_show");
+        let dataTransfer = new DataTransfer(); // Create a new file list
+
+        selectedSlideFiles.forEach(function (file) {
+            dataTransfer.items.add(file); // Add remaining images
+        });
+
+        fileInput.files = dataTransfer.files; // Attach filtered images to input
+
+        console.log("Final file count before submission:", fileInput.files.length);
+    });
 </script>
 @endpush

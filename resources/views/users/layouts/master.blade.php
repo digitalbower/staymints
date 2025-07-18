@@ -6,6 +6,7 @@
 <meta name="description" content="" />
 <meta name="keywords" content="" />
 <link rel="apple-touch-icon" sizes="180x180" href="{{asset('assets/user/image/favicon.ico')}}" />
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <title>TRAVEL WEBSITE || HOME</title>
 @include('users.layouts.headercss')
 </head>

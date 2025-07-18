@@ -109,9 +109,9 @@
                     </select>
                 </div>
                 <div class="mb-4">
-                    <label for="sales_person_id" class="form-label">Sales person</label>
+                    <label for="sales_person_id" class="form-label">Contract Person</label>
                     <select class="form-control" name="sales_person_id" id="sales_person_id">
-                        <option value="">Select Sales person</option>
+                        <option value="">Select Contract Person</option>
                         @foreach ($sales_persons as $sales_person)
                             <option value="{{ $sales_person->id }}" {{ $package->sales_person_id == $sales_person->id ? 'selected' : '' }}>
                                 {{ $sales_person->name }}
@@ -168,9 +168,10 @@
                     <div id="images-preview" class="d-flex flex-wrap mt-3"></div>
                     <div id="images-error" class="text-danger mt-1" style="display: none;">Please upload at least one valid image.</div>
                 </div>
+               
                 <div class="mb-3">
                     @if($package->video)
-                        <video width="320" height="240" controls>
+                        <video width="100" height="100" controls>
                             <source src="{{ asset('storage/' . $package->video) }}" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
@@ -182,6 +183,23 @@
                     <div id="video-preview" class="mt-2 d-flex flex-wrap"></div>
                 
                     <div id="video-error" class="text-danger mt-1" style="display: none;">Please upload a video.</div>
+                </div>
+                 <div class="mb-3">
+                    <div id="existing-slide-images">
+                    @if(!empty($package->slide_show))
+                        @foreach(json_decode($package->slide_show, true) as $index => $slide)
+                            <div class="slide-wrapper" style="display:inline-block; position:relative; margin:5px;" data-index="{{ $index }}" data-path="{{ $slide }}">
+                            <img src="{{ asset('storage/' . $slide) }}" class="img-thumbnail" width="100">
+                            <button type="button" class="btn-close remove-existing-slide-image" data-index="{{ $index }}"></button>
+                            </div>
+                        @endforeach
+                    @endif
+                    </div>
+                    <input type="hidden" name="removed_slide_images" id="removed_slide_images" value="">
+                    <label for="slide_show" class="form-label">Package Gallery More</label>
+                    <input type="file" class="form-control" id="slide_show" name="slide_show[]" multiple accept="image/*">
+                    <div id="slide-preview" class="d-flex flex-wrap mt-3"></div>
+                    <div id="slide-error" class="text-danger mt-1" style="display: none;">Please upload valid image.</div>
                 </div>
                 <div id="input-inclusions-group-wrapper">
                     <label for="included" class="form-label">Inclusions</label>
@@ -197,7 +215,7 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label for="duration" class="form-label">Duration</label>
+                    <label for="duration" class="form-label">Duration (Nights)</label>
                     <input type="number" class="form-control" id="duration" name="duration" value="{{$package->duration }}">
                 </div>
                 <div class="mb-3">
@@ -252,6 +270,10 @@
                         <input type="text" name="extra_services[]" class="form-control" placeholder="Enter extra services">
                         <button type="button" class="btn btn-success add-extra-services-btn">+</button>
                     </div>
+                </div>
+                   <div class="mb-3">
+                    <label for="itinerary_desc" class="form-label">Itinerary Description</label>
+                    <textarea class="form-control" id="itinerary_desc" name="itinerary_desc">{{ $package->itinerary_desc }}</textarea>
                 </div>
                 <div id="itinerary-wrapper">
                     <label for="included" class="form-label">Itinerary</label>
@@ -396,9 +418,12 @@ $(document).ready(function () {
             tag_id: "required",
             sales_person_id: "required",
             unit_type_id: "required",
+            image: {
+                extension: "jpg|jpeg|png"
+            },
             starting_price: "required",
             duration: "required",
-            group_size: "required",
+            itinerary_desc: "required",
             overview:  { 
                 required: function (textarea) {
                     // Get Summernote content
@@ -419,7 +444,9 @@ $(document).ready(function () {
                 extension: "jpg|jpeg|png|gif|svg",
                 filesize: 2 * 1024 * 1024
             },
-
+            "slide_show[]": {
+                extension: "jpg|jpeg|png"
+            },
             // inclusions[]
             "inclusions[]": {
                 required: true
@@ -446,7 +473,7 @@ $(document).ready(function () {
             unit_type_id: "Unit type is required",
             starting_price: "Starting price is required",
             duration: "Duration is required",
-            group_size: "Group size is required",
+            itinerary_desc: "Itinerary description is required",
             overview: "Overview is required",
             highlights: "Highlights are required",
             "inclusions[]": "Please add at least one inclusion",
@@ -655,7 +682,7 @@ let selectedFiles = [];
             reader.onload = function (e) {
                 $("#images-preview").append(
                     `<div class="m-2 d-inline-block position-relative image-preview" data-index="${index}">
-                        <button type="button" class="btn-close position-absolute top-0 start-100 translate-middle remove-image" data-index="${index}" aria-label="Close"></button>
+                        <button type="button" class="btn-close position-absolute top-0 start-100 translate-middle remove-gallery-image" data-index="${index}" aria-label="Close"></button>
                         <img src="${e.target.result}" class="img-thumbnail" width="100">
                     </div>`
                 );
@@ -665,7 +692,7 @@ let selectedFiles = [];
     });
 
     // **Remove selected image**
-    $(document).on("click", ".remove-image", function () {
+    $(document).on("click", ".remove-gallery-image", function () {
         let index = $(this).data("index");
         selectedFiles.splice(index, 1); // Remove from array
         $(this).parent().remove(); // Remove from preview
@@ -733,5 +760,82 @@ let selectedFiles = [];
         $('#image').val(''); // Reset file input
     });
 
+
+     let selectedSlideFiles = [];
+    let removedExistingSlideImages = [];
+
+    // ========== NEW IMAGE HANDLING ==========
+
+    // On file selection
+    $("#slide_show").on("change", function (event) {
+        let files = Array.from(event.target.files); // Convert FileList to array
+        console.log("New files:", files);
+        
+        // Append new files to the global array
+        selectedSlideFiles = [...selectedSlideFiles, ...files];
+
+        console.log("All selected files:", selectedSlideFiles);
+
+        $("#slide-preview").empty(); // Clear preview to avoid duplicates
+
+        // Display all selected files
+        selectedSlideFiles.forEach(function (file, index) {  // Use function() to access index properly
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                $("#slide-preview").append(
+                    `<div class="m-2 d-inline-block position-relative slide-preview" data-index="${index}">
+                        <button type="button" class="btn-close position-absolute top-0 start-100 translate-middle remove-slide-image" data-index="${index}" aria-label="Close"></button>
+                        <img src="${e.target.result}" class="img-thumbnail" width="100">
+                    </div>`
+                );
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+
+    // **Remove selected image**
+    $(document).on("click", ".remove-slide-image", function () {
+        let index = $(this).data("index");
+        selectedSlideFiles.splice(index, 1); // Remove from array
+        $(this).parent().remove(); // Remove from preview
+
+        console.log("Updated selected files:", selectedFiles);
+    });
+
+
+
+    // ========== FINAL FORM PREP ==========
+
+    $("form").on("submit", function (e) {
+        let fileInput = document.getElementById("slide_show");
+        let dataTransfer = new DataTransfer(); // Create a new file list
+
+        selectedSlideFiles.forEach(function (file) {
+            dataTransfer.items.add(file); // Add remaining images
+        });
+
+        fileInput.files = dataTransfer.files; // Attach filtered images to input
+
+        console.log("Final file count before submission:", fileInput.files.length);
+    });
+    
+    // ========== EXISTING IMAGE HANDLING ==========
+    window.removedExistingSlideImages = function(index) {
+        const slideWrapper = document.querySelector(`#existing-slide-images .slide-wrapper[data-index='${index}']`);
+        if (slideWrapper) {
+            const path = slideWrapper.getAttribute('data-path');
+            removedExistingSlideImages.push(path);
+            slideWrapper.remove();
+            document.getElementById('removed_slide_images').value = JSON.stringify(removedExistingSlideImages);
+        }
+    };
+    
+    $(document).on('click', '.remove-existing-slide-image', function () {
+        const index = $(this).data('index');
+        window.removedExistingSlideImages(index); // or directly put the logic here
+    });
+    
+    
+    
 </script>
 @endpush

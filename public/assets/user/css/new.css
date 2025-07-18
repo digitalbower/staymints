@@ -195,7 +195,7 @@ span.flags img.img-fluid{
 }
 
 .card-content-top .days_night_block {
-    font-size: 12px;
+    font-size: 10px;
     line-height: 14px;
     width: 150px;
     text-align: center;
@@ -576,6 +576,414 @@ span.flags img.img-fluid{
     margin: 10px;
 }
 
+.swiper-button-next, .swiper-button-prev {
+    width: 40px;
+    height: 40px;
+    background: #FFF;
+    border-radius: 50%;
+    box-shadow: 5px 3px 40px rgba(0, 72, 88, 0.1);
+    -webkit-box-shadow: 5px 3px 40px rgba(0, 72, 88, 0.1);
+}
+
+.swiper-button-next::after, .swiper-button-prev::after {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.package-card .package-card-content .card-content-top h5 {
+    height: 55px;
+}
+
+.package-card .package-card-content .card-content-top h5 a{
+    font-size: 22px;
+}
+
+.experience-card .package-card-content .card-content-center {
+    padding: 10px;
+    background: #f7f7f7;
+    border-radius: 5px;
+    border: 1px #EEEEEE solid;
+    margin: 20px 0 0;
+}
+
+.experience-card .package-card-content {
+    padding: 23px 12px 10px;
+}
+
+.hotel_overview_details ul li:not(:first-child){
+    margin-left: 15px;
+}
+
+.hotel_overview_details ul li a{
+    font-size: 18px;
+    line-height: 24px;
+    color: #000000;
+    font-weight: 500;
+    padding: 8px 15px;
+}
+
+.travellers_modal, .refundable_popup{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: none;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 10;
+}
+
+.travellers_modal_inner, .refundable_popup_inner{
+    background: #FFFFFF;
+    padding: 20px;
+    border-radius: 20px;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    max-width: 450px;
+    margin: auto;
+}
+
+.traveller_close, .close_refundable{
+    font-size: 18px;
+    color: #333;
+    position: absolute;
+    top: 15px;
+    right: 20px;
+}
+
+.guest_count{
+    cursor: pointer;
+}
+
+.travellers_modal .custom-select-wrap ul.guest-count li.single-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.travellers_modal .custom-select-wrap ul.guest-count li.single-item .title h6{
+    margin: 0;
+    font-size: 16px;
+    line-height: 18px;
+}
+
+.travellers_modal .custom-select-wrap ul.guest-count li.single-item .title span{
+    font-size: 12px;
+}
+
+.travellers_modal .custom-select-wrap ul.guest-count li.single-item .quantity-counter {
+    display: flex;
+}
+
+.travellers_modal .custom-select-wrap ul.guest-count li.single-item .quantity-counter input.quantity__input {
+    width: 40px;
+    text-align: center;
+}
+
+.travellers_modal .custom-select-wrap ul.guest-count li.single-item .quantity-counter a {
+    width: 30px;
+    padding: 0;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    border: 1px #1890ff solid;
+    border-radius: 50%;
+    color: #1890ff;
+}
+
+.childrens_age{
+    display: none;
+}
+
+.hotel_room_detail{
+    border: 1px #eee solid;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.hotel_room_detail span.label{
+    background: #20c5f2;
+    display: block;
+    color: #FFFFFF;
+    padding: 4px;
+    font-size: 14px;
+}
+
+.excellent_review p{
+    font-size: 12px;
+    line-height: 10px;
+}
+
+.excellent_review span{
+    font-size: 10px;
+    line-height: 12px;
+}
+
+span.green_star {
+    display: inline-block;
+    font-size: 14px;
+    background: green;
+    border-radius: 5px;
+    padding: 0 6px;
+    color: #FFF;
+    height: 34px;
+    line-height: 34px;
+    margin-right: 8px;
+}
+
+.hotel_overview_details .rooms_facilities li:not(:first-child){
+    margin-left: 0;
+}
+
+.form-check .form-check-input:checked {
+    background-color: #20c5f2;
+    border-color: #20c5f2;
+}
+
+.hotel_overview_details .highlights-content li:not(:first-child){
+    margin-left: 0;
+}
+
+.excellent_review {
+    height: 34px;
+}
+
+a.refundable_btn, a.more_details{
+    display: inline-block;
+    font-size: 14px;
+}
+
+a.refundable_btn{
+    color: rgb(39, 231, 39);
+}
+
+.booking_dates{
+    font-size: 12px;
+}
+
+.hotel_room_detail p{
+    line-height: 1.1;
+}
+
+.hotel_room_detail .excellent_review span{
+    display: block;
+}
+
+.hotel_room_detail h6{
+    font-size: 20px;
+    line-height: 24px;
+    margin: 0 0 10px;
+}
+
+.rooms_facilities{
+    margin: 10px 0;
+}
+
+.payment_grid{
+    border: 1px #EEEEEE solid;
+    border-radius: 20px;
+    padding: 15px;
+}
+
+.payment_grid h6{
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: 500;
+}
+
+.payment_grid ul li{
+    font-size: 12px;
+    line-height: 16px;
+}
+
+.travellers_modal_inner .custom-select-wrap h5 {
+    font-size: 16px;
+    line-height: 20px;
+}
+
+.payment_grid h5{
+    font-size: 18px;
+    line-height: 24px;
+    margin: 0;
+}
+
+.payment_grid >div.text-end>span{
+    font-size: 12px;
+    line-height: 16px;
+}
+
+.refundable_popup_inner {
+    max-width: 600px;
+}
+
+.refund_check_in_out{
+    background: #eff3f7;
+    padding: 25px 60px;
+    border-radius: 20px;
+    margin-bottom: 25px;
+}
+
+.refund_check_in_out ul::after{
+    content: '';
+    display: inline-block;
+    width: 100%;
+    height: 1px;
+    background: #000000;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+}
+
+.refund_check_in_out ul li{
+    width: 33%;
+}
+
+.hotel_overview_details .refund_check_in_out ul li:last-child{
+    width: 14%;
+    margin-left: auto;
+}
+
+.refund_date h6{
+    margin: 0;
+    font-size: 18px;
+    line-height: 24px;
+    color: #000000;
+}
+
+.refund_date h6 span{
+    font-size: 14px;
+    line-height: 16px;
+}
+
+.refund_date .refund_date_caption{
+    width: 75%;
+    margin-left: auto;
+}
+
+.refund_date .refund_date_caption span{
+    font-size: 14px;
+    line-height: 18px;
+    display: block;
+}
+
+.hotel_overview_details .refund_check_in_out li:not(:first-child){
+    margin-left: 0;
+}
+
+.profile-header {
+    margin-bottom: 30px;
+}
+.profile-img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 5px solid #fff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+.profile-tabs {
+    background-color: white;
+}
+
+.profile-tabs .nav-tabs .nav-link {
+    color: #495057;
+    font-weight: 500;
+    padding: 16px 20px;
+    width: 100%;
+    justify-content: flex-start;
+    border-radius: 0;
+}
+
+.profile-tabs .nav-tabs .nav-item{
+    width: 100%;
+}
+
+.profile-tabs .nav-tabs .nav-link.active {
+    color: #FFFFFF;
+    font-weight: 600;
+    border-radius: 0;
+}
+
+.tab-content {
+    padding: 20px 0;
+}
+.wishlist-item, .review-item, .enquiry-item {
+    border-bottom: 1px solid #eee;
+    padding: 15px 0;
+}
+.wishlist-item:last-child, .review-item:last-child, .enquiry-item:last-child {
+    border-bottom: none;
+}
+.rating {
+    color: #ffc107;
+}
+.btn-edit {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+
+.user_profile_details, .user_profile_tabs{
+    background: #f8f8f8;
+    height: 100%;
+    padding: 20px;
+}
+
+.refundable_popup_inner .refund_check_in_out ul li p, .refundable_popup_inner .refund_check_in_out ul li span{
+    font-size: 14px;
+}
+
+.refundable_popup_inner .refund_check_in_out ul li span.sm-circle {
+    display: block;
+    width: 10px;
+    height: 10px;
+    background: #000;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 9;
+}
+
+.refundable_popup_inner .refund_check_in_out ul li span.partial_fullrefund {
+    position: relative;
+    top: -6px;
+}
+
+.refundable_popup_inner .refund_check_in_out ul li:nth-child(2) span.sm-circle{
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+}
+
+.refundable_popup_inner .refund_check_in_out ul li:nth-child(3) span.sm-circle{
+    right: 0;
+    left: auto;
+    background-color: #FFFFFF;
+    border: 1px #000000 solid;
+}
+
+.hotel-details-section .hotel-details-area .nav-tabs li.nav-item {
+    width: 18%;
+}
+
+.hotel-details-section .hotel-details-area .nav-tabs li.nav-item .nav-link{
+    width: 100%;
+}
+
+.profile-tabs .user_profile_details .nav-tabs .nav-link{
+    padding: 10px 30px;
+    border-radius: 50px;
+}
+
+.profile-tabs .user_profile_details .nav-tabs .nav-link.active{
+    background-color: #20c5f2;
+    border: 0;
+}
+
+
 @media screen and (max-width:1199px) {
 
 .bottom-card .package-card {
@@ -593,6 +1001,10 @@ span.flags img.img-fluid{
 
 .package-sidebar-section .package-inner-title-section{
     margin-top: 0;
+}
+
+.package-card .package-card-content {
+    padding: 15px;
 }
 
 .banner-section .filter-wrapper{
@@ -654,7 +1066,19 @@ span.flags img.img-fluid{
 @media screen and (max-width:767px) {
 
 .mob_filter{
-    margin-top: 20px;
+    margin-top: 0;
+}
+
+.package-details-section .contact-form-wrapper {
+    margin-bottom: 60px;
+}
+
+.package-details-section .bottom-card h3{
+    padding-left: 10px;
+}
+
+.footer-section.style-1 .footer-top-content {
+    padding: 35px 15px;
 }
 
 .banner-section .filter-wrapper .nav-buttons .nav-pills .nav-item .nav-link {
@@ -681,5 +1105,30 @@ span.flags img.img-fluid{
 .banner-section .filter-wrapper .nav-buttons .nav-pills{
     justify-content: flex-start;
 }
-    
+
+.customise_sm_popup{
+    right: 0;
+    width: 85%;
+    left: 0;
+    margin: 0 auto;
+}
+
+.hotel_overview_details .overview_links {
+    overflow-y: hidden;
+}
+
+.hotel-details-section .hotel-details-area .nav-tabs{
+    margin-top: 0;
+}
+
+.hotel-details-section .hotel-details-area .nav-tabs li.nav-item{
+    width: 16%;
+}
+
+.hotel-details-section .hotel-details-area .nav-tabs .nav-item .modal-image button span{
+    padding: 0;
+    gap: 0;
+    font-size: 11px;
+}
+
 }

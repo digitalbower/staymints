@@ -1472,14 +1472,31 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 @endif
 <script>
-    document.querySelectorAll('.destination').forEach(item => {
-        item.addEventListener('click', function () {
-            const countryId = this.getAttribute('data-country-id');
+$(document).ready(function () {
 
-            // Set the hidden input and submit the form
-            document.getElementById('countryInput').value = countryId;
-            document.getElementById('countryForm').submit();
-        });
+    // Destination click: mark as selected
+    $(document).on('click', '.destination', function () { 
+        $('.destination').removeClass('selected');     // Remove previous selections
+        $(this).addClass('selected');                  // Mark this as selected
     });
+
+    // Form submit: get selected destination
+    $('#searchPackage').on('submit', function (e) {
+        const selectedDestination = $('.destination.selected');
+
+        if (selectedDestination.length === 0) {
+            alert('Please select a destination.');
+            e.preventDefault();
+            return;
+        }
+
+        const countryId = selectedDestination.data('country-id');
+        console.log("Selected country ID:", countryId);
+
+        $('#countryInput').val(countryId); // Set hidden input
+    });
+});
 </script>
+
+
 @endpush

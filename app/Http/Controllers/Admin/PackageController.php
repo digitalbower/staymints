@@ -53,11 +53,10 @@ class PackageController extends Controller
             'gallery' => 'required', 
             'gallery.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'image' =>'required',
-             'video' => 'nullable|mimes:mp4,mov,ogg,qt,webm|max:51200',
+            'video' => 'nullable|mimes:mp4,mov,ogg,qt,webm|max:51200',
             'inclusions' => 'required|array',
             'inclusions.*' => 'required',
             'duration' =>'required',
-            'group_size' =>'required',
             'overview' =>'required',
             'highlights' =>'required',
             'included' =>'required|array',
@@ -66,6 +65,7 @@ class PackageController extends Controller
             'excluded.*' => 'required',
             'extra_services'=> 'required|array',
             'extra_services.*' => 'required',
+            'itinerary_desc' =>'required',
             'itineraries' => 'required|array',
             'itineraries.*.day_number' => 'required',
             'itineraries.*.title' => 'required',
@@ -100,6 +100,19 @@ class PackageController extends Controller
             }
                 
             $data['gallery'] = json_encode($galleryArray);
+        }
+        if ($request->hasFile('slide_show')) {
+            $slideShowArray = [];
+    
+            
+            $files = is_array($request->file('slide_show')) ? $request->file('slide_show') : [$request->file('slide_show')];
+    
+            foreach ($files as $image) {
+                $path = $image->store('packages/slide_show', 'public');  
+                $slideShowArray[] = $path;
+            }
+                
+            $data['slide_show'] = json_encode($slideShowArray);
         }
         if ($request->hasFile('og_image')) {
             $og_image = $request->file('og_image');
@@ -161,15 +174,17 @@ class PackageController extends Controller
             'unit_type_id' =>'required',
             'starting_price' =>'required',
             'gallery' => 'nullable', 
-            'gallery.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'gallery.*' => 'image|mimes:jpeg,png,jpg,|max:2048',
             'image' =>'nullable',
             'video' => 'nullable|mimes:mp4,mov,ogg,qt,webm|max:51200',
+            'slide_show' => 'nullable', 
+            'slide_show.*' => 'image|mimes:jpeg,png,jpg|max:2048',
             'inclusions' => 'array',
             'inclusions.*' => 'nullable',
             'extra_services'=> 'array',
             'extra_services.*' => 'nullable',
             'duration' =>'required',
-            'group_size' =>'required',
+            'itinerary_desc' =>'required',
             'overview' =>'required',
             'highlights' =>'required',
             'included' =>'array',
@@ -184,7 +199,7 @@ class PackageController extends Controller
         ],
         [
             'gallery.*.image' => 'Each file must be a valid image.', 
-            'gallery.*.mimes' => 'Only JPG, JPEG, PNG, and GIF formats are allowed.', 
+            'gallery.*.mimes' => 'Only JPG, JPEG and PNG formats are allowed.', 
             'gallery.*.max' => 'Each image must not exceed 2MB.', 
         ]);
 
@@ -193,6 +208,10 @@ class PackageController extends Controller
         $galleryArray = $package->gallery ? json_decode($package->gallery, true) : [];
 
         $removedImages = json_decode($request->input('removed_images'), true);
+
+        $slideShowArray = $package->slide_show ? json_decode($package->slide_show, true) : [];
+
+        $removedSlideImages = json_decode($request->input('removed_slide_images'), true);
         
         // Remove images from storage and gallery array
         if (!empty($removedImages)) {
@@ -208,12 +227,33 @@ class PackageController extends Controller
             // Re-index the array to keep it clean
             $galleryArray = array_values($galleryArray);
         }
+
+         // Remove images from storage and gallery array
+        if (!empty($removedSlideImages)) {
+            foreach ($removedSlideImages as $path) {
+                Storage::delete('public/' . $path); // Delete from disk
+        
+                // Remove from gallery array
+                if (($key = array_search($path, $slideShowArray)) !== false) {
+                    unset($slideShowArray[$key]);
+                }
+            }
+        
+            // Re-index the array to keep it clean
+            $slideShowArray = array_values($slideShowArray);
+        }
         
         // Add new uploaded images
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $image) {
                 $path = $image->store('packages', 'public');
                 $galleryArray[] = $path;
+            }
+        }
+        if ($request->hasFile('slide_show')) {
+            foreach ($request->file('slide_show') as $image) {
+                $path = $image->store('packages/slide_show', 'public');
+                $slideShowArray[] = $path;
             }
         }
         if ($request->hasFile('image')) {
@@ -244,6 +284,9 @@ class PackageController extends Controller
         }
         if (!empty($galleryArray)) {
             $data['gallery'] = json_encode($galleryArray);
+        }
+        if (!empty($slideShowArray)) {
+            $data['slide_show'] = json_encode($slideShowArray);
         }
         $data['inclusions'] = array_filter($request->input('inclusions', []), fn($value) => trim($value) !== '');
         $data['included'] = array_filter($request->input('included', []), fn($value) => trim($value) !== '');

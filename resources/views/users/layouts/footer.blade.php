@@ -10,7 +10,7 @@
                     <ul>
                         @foreach ($follow_us as $follow)
                         <li>
-                            <a href="{{$follow->url}}">
+                            <a href="{{$follow->link}}">
                                 <i class="{{$follow->icon}}"></i>
                             </a>
                         </li>

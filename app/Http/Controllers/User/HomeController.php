@@ -13,7 +13,14 @@ class HomeController extends Controller
 {
     public function index(){
         $categories = Category::where('status',1)->get();
-        $countries = Country::where('status',1)->get();
+         $countries = Country::where('status', 1)
+        ->whereHas('packages', function ($query) {
+            $query->where('status', 1);
+        })
+        ->with(['packages' => function ($query) {
+            $query->where('status', 1);
+        }])
+        ->get();
         $packages = Package::with([
         'country:id,country_name',
         'type:id,type_name',
@@ -51,8 +58,8 @@ class HomeController extends Controller
             'type:id,type_name',
             'tag:id,tag_name'
             ])->where('status',1)->paginate(12);
-            $countries = Country::where('status',1)->get();
-            $categories = Category::where('status',1)->get();
+        $countries = Country::where('status',1)->get();
+        $categories = Category::where('status',1)->get();
         // Get min and max starting price
         $minPrice = Package::min('starting_price');
         $maxPrice = Package::max('starting_price');
@@ -193,12 +200,7 @@ class HomeController extends Controller
         return view('users.packages', compact('packages', 'countries', 'categories', 'follow_us', 'partners', 'links','priceRanges'));
     }
 
-    public function packageDetail(){
-        $follow_us = Footer::where('type','Follow On Us')->get();
-        $partners = Footer::where('type','Payment Partners')->get();
-        $links = Footer::where('type','Quick Links')->get();
-        return view('users.package_detail')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links]);
-    }
+    
     public function contact(){
         $follow_us = Footer::where('type','Follow On Us')->get();
         $partners = Footer::where('type','Payment Partners')->get();

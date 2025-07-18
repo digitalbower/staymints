@@ -17,6 +17,7 @@ class Package extends Model
         'sales_person_id',
         'unit_type_id',
         'starting_price',
+        'slide_show',
         'gallery',
         'image',
         'video',
@@ -35,13 +36,15 @@ class Package extends Model
         'og_image',
         'schema',
         'status',
-        'recommendation'
+        'recommendation',
+        'itinerary_desc'
     ];
     protected $casts = [
     'inclusions' => 'array',
     'included' => 'array',
     'excluded' => 'array',
     'gallery' => 'array',
+    'slide_show' => 'array',
     'extra_services'=>'array'
 ];
     public function itineraries(){
@@ -56,5 +59,12 @@ class Package extends Model
     }
     public function type(){
         return $this->belongsTo(UnitType::class,'unit_type_id');
+    }
+    public function category(){
+        return $this->belongsTo(Category::class,'category_id');
+    }
+    public function reviews(){
+
+        return $this->hasMany(Review::class);
     }
 }
