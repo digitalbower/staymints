@@ -7,11 +7,29 @@
         @endif
         <div class="selector-and-grid">
             <div class="selector">
-                <select id="rating">
-                    <option>Rating</option>
-                    <option>Time</option>
-                    <option>Price</option>
+               <form id="filterForm" method="GET" action="{{ route('user.package.filter') }}">
+                {{-- Sort dropdown --}}
+                <select name="sort" id="sortBy">
+                    <option value="">Sort by...</option>
+                    <option value="rating_desc" {{ request('sort') == 'rating_desc' ? 'selected' : '' }}>Rating: High to Low</option>
+                    <option value="rating_asc" {{ request('sort') == 'rating_asc' ? 'selected' : '' }}>Rating: Low to High</option>
+                    <option value="duration_desc" {{ request('sort') == 'duration_desc' ? 'selected' : '' }}>Duration: High to Low</option>
+                    <option value="duration_asc" {{ request('sort') == 'duration_asc' ? 'selected' : '' }}>Duration: Low to High</option>
+                    <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Price: High to Low</option>
+                    <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Price: Low to High</option>
                 </select>
+
+                {{-- Preserve filters from other forms --}}
+                @foreach (request()->except('sort', 'page') as $key => $value)
+                    @if (is_array($value))
+                        @foreach ($value as $subVal)
+                            <input type="hidden" name="{{ $key }}[]" value="{{ $subVal }}">
+                        @endforeach
+                    @else
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endif
+                @endforeach
+            </form>
             </div>
         </div>
     </div>
@@ -32,7 +50,7 @@
                                 fill="#F38035" />
                         </svg>
                     </div>
-                    <span>4.8</span>
+                    <span>{{ $package->average_rating }}</span>
                 </div>
             </div>
             <div class="package-card-content">

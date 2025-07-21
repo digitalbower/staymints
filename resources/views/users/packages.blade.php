@@ -101,14 +101,14 @@
                             <a href="javascript:void(0);" id="showLess" class="text-black" style="display: none;">Show Less</a>
 
                         </div>
-                    </form>
-
-                    {{-- <div class="single-widget mb-30">
-                        <h5 class="widget-title">Hotel Star Rating</h5>
+                    
+{{-- 
+                    <div class="single-widget mb-30">
+                        <h5 class="widget-title">Rating</h5>
                         <ul class="review-list two">
                             <li class="single-list">
                                 <div class="checkbox-item">
-                                        <input type="radio" class="input-radio active" name="pilih"> 
+                                        <input type="radio" class="input-radio active" id="rating5" name="rating" value="5"> 
                                         <div class="star">
                                         <div class="start-area">
                                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
@@ -149,7 +149,7 @@
                             </li>                                                                                             
                             <li class="single-list">
                                 <div class="checkbox-item">
-                                        <input type="radio" class="input-radio active" name="pilih"> <div class="star">
+                                        <input type="radio" class="input-radio active" id="rating4" name="rating" value="4+"> <div class="star">
                                         <div class="start-area">
                                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
                                                 xmlns="http://www.w3.org/2000/svg">
@@ -189,7 +189,7 @@
                             </li>                                                                                             
                             <li class="single-list">
                                 <div class="checkbox-item">
-                                        <input type="radio" class="input-radio active" name="pilih"> <div class="star">
+                                        <input type="radio" class="input-radio active" id="rating3" name="rating" value="3+"> <div class="star">
                                         <div class="start-area">
                                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
                                                 xmlns="http://www.w3.org/2000/svg">
@@ -229,7 +229,7 @@
                             </li>                                                                                             
                             <li class="single-list">
                                 <div class="checkbox-item">
-                                        <input type="radio" class="input-radio active" name="pilih"> <div class="star">
+                                        <input type="radio" class="input-radio active" id="rating2" name="rating" value="2+"> <div class="star">
                                         <div class="start-area">
                                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
                                                 xmlns="http://www.w3.org/2000/svg">
@@ -269,7 +269,7 @@
                             </li>                                                                                             
                             <li class="single-list">
                                 <div class="checkbox-item">
-                                        <input type="radio" class="input-radio active" name="pilih"> <div class="star">
+                                        <input type="radio" class="input-radio active" id="rating1" name="rating" value="1+"> <div class="star">
                                         <div class="start-area">
                                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
                                                 xmlns="http://www.w3.org/2000/svg">
@@ -308,53 +308,28 @@
                                 </div> 
                             </li>                                                                                             
                         </ul>
-                    </div>
-                    
+                    </div> --}}
                     <div class="single-widget">
                         <h5 class="widget-title">Reviews</h5>
                         <div class="d-flex gap-2 align-items-start text-center">
-                            <div class="checkbox">
-                                <label class="checkbox-wrapper w-100">
-                                    <input type="radio" class="checkbox-input" />
-                                    <span class="checkbox-tile category-item properties w-100">
-                                        <span> <3 <i class="fa-solid fa-star"></i></span>
-                                        <p>(0)</p>
-                                    </span>
-                                </label>
-                            </div>
-                            
-                            <div class="checkbox">
-                                <label class="checkbox-wrapper w-100">
-                                    <input type="radio" class="checkbox-input" />
-                                    <span class="checkbox-tile category-item properties w-100">
-                                        <span>3 <i class="fa-solid fa-star"></i></span>
-                                        <p>(25)</p>
-                                    </span>
-                                </label>
-                            </div>
-
-                            <div class="checkbox">
-                                <label class="checkbox-wrapper w-100">
-                                    <input type="radio" class="checkbox-input" />
-                                    <span class="checkbox-tile category-item properties w-100">
-                                        <span>4 <i class="fa-solid fa-star"></i></span>
-                                        <p>(75)</p>
-                                    </span>
-                                </label>
-                            </div>
-
-                            <div class="checkbox">
-                                <label class="checkbox-wrapper w-100">
-                                    <input type="radio" class="checkbox-input" />
-                                    <span class="checkbox-tile category-item properties w-100">
-                                        <span>5 <i class="fa-solid fa-star"></i></span>
-                                        <p>(150)</p>
-                                    </span>
-                                </label>
-                            </div>
+                            @foreach([5,4,3,2,1] as $star)
+                                @php
+                                    $min = $star;
+                                    $max = $star + 0.9;
+                                @endphp
+                                <div class="checkbox">
+                                    <label class="checkbox-wrapper w-100">
+                                        <input type="radio" name="rating" class="checkbox-input"  value="{{ $min }}-{{ $max }}" />
+                                        <span class="checkbox-tile category-item properties w-100">
+                                            <span> {{ $star }} <i class="fa-solid fa-star"></i></span>
+                                            <p>({{ $ratingCounts[$star] ?? 0 }})</p>
+                                        </span>
+                                    </label>
+                                </div>
+                            @endforeach
                         </div>
-                    </div> --}}
-
+                    </div>
+                </form>
                     {{-- <div class="d-flex align-items-center justify-content-between mt-5 d-lg-none px-4">
                         <a href="javascript:void(0);" class="btn btn-default border clear_btn">Clear</a>
                         <a href="javascript:void(0);" class="btn btn-primary">Apply</a>
@@ -568,10 +543,21 @@ function debounce(func, wait = 300) {
     timeout = setTimeout(() => func.apply(context, args), wait);
   };
 }
-function applyFilters() {
-  const formData = $('#filterForm').serialize();
-  console.log('Filters applied:', formData); // Debug
+$(document).ready(function() {
+  // Delegated event binding on #packageList
+  $('#packageList').on('change', '#sortBy', applyFilters);
 
+  // Other filters outside #packageList? Bind normally or delegated on #filterForm
+  $('#filterForm').on('change', '#duration, input[name="price[]"], input[name="category_id"], input[name="country_id"], input[name="rating"]', applyFilters);
+
+  // Initialize niceSelect on page load for the first time
+  $('#sortBy').niceSelect();
+});
+function applyFilters() {
+    let formData = $('#filterForm').serializeArray();
+    formData.push({ name: 'sort', value: $('#sortBy').val() });
+
+  console.log('Filters applied:', formData);
   $.ajax({
     url: $('#filterForm').attr('action'),
     type: 'GET',
@@ -579,7 +565,10 @@ function applyFilters() {
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
     success(html) {
       $('#packageList').html(html);
-      $('#rating').niceSelect('destroy').niceSelect();
+      $('#sortBy').niceSelect('destroy').niceSelect();
+      // Re-bind the change event on the new <select>
+        $('#sortBy').off('change').on('change', applyFilters);
+
     },
     error(err) {
       console.error("AJAX filter error:", err);
@@ -703,7 +692,6 @@ $(document).ready(function() {
 
 
  $(function() {
-        $('#filterForm').on('change', '#duration,input[name="price[]"],input[name="category_id"], input[name="country_id"]', applyFilters);
 
         // Show More
         $('#showMore').on('click', function () {

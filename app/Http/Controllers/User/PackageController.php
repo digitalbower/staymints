@@ -11,6 +11,7 @@ use App\Models\Rating;
 use App\Models\Review;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PackageController extends Controller
 {
@@ -131,7 +132,9 @@ class PackageController extends Controller
         ]);
     }
     public function wishlist($package_id){
-        Wishlist::create(['package_id'=>$package_id]); 
+        Wishlist::create([
+            'user_id'=>Auth::user()->id,
+            'package_id'=>$package_id]); 
         return response()->json([
         'message' => 'Added to wishlist',
         ]);

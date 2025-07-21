@@ -56,10 +56,66 @@ class HomeController extends Controller
         $packages = Package::with([
             'country:id,country_name',
             'type:id,type_name',
-            'tag:id,tag_name'
+            'tag:id,tag_name',
+            'reviews.rating'
             ])->where('status',1)->paginate(12);
-        $countries = Country::where('status',1)->get();
-        $categories = Category::where('status',1)->get();
+            $countries = Country::where('status',1)->get();
+            $categories = Category::where('status',1)->get();
+
+            $packages->setCollection(
+                $packages->getCollection()->transform(function ($package) {
+                    $totalRating = 0;
+                    $ratingCount = 0;
+
+                    foreach ($package->reviews as $review) {
+                        foreach ($review->rating as $rating) {
+                            $totalRating += $rating->review_rating;
+                            $ratingCount++;
+                        }
+                    }
+
+                    $averageRating = $ratingCount > 0 ? $totalRating / $ratingCount : 0;
+
+                    $package->average_rating = number_format($averageRating, 1);
+                    $package->rating_count = $ratingCount;
+
+                    return $package;
+                })
+            );
+
+            // ✅ Count number of packages in each star group (1–5)
+            $ratingGroups = collect([
+                1 => 0,
+                2 => 0,
+                3 => 0,
+                4 => 0,
+                5 => 0,
+            ]);
+
+            foreach ($packages as $package) {
+                $avg = (float) $package->average_rating;
+
+                if ($avg >= 1.0 && $avg < 2.0) {
+                    $group = 1;
+                } elseif ($avg >= 2.0 && $avg < 3.0) {
+                    $group = 2;
+                } elseif ($avg >= 3.0 && $avg < 4.0) {
+                    $group = 3;
+                } elseif ($avg >= 4.0 && $avg < 5.0) {
+                    $group = 4;
+                } elseif ($avg == 5.0) {
+                    $group = 5;
+                } else {
+                    continue;
+                }
+
+                $current = $ratingGroups->get($group, 0);
+                $ratingGroups->put($group, $current + 1);
+            }
+
+            $ratingCounts = $ratingGroups->toArray();
+
+
         // Get min and max starting price
         $minPrice = Package::min('starting_price');
         $maxPrice = Package::max('starting_price');
@@ -81,7 +137,7 @@ class HomeController extends Controller
                 'value' => $start . '-' . $end,
             ];
         }
-        return view('users.packages')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'packages'=>$packages,'countries'=>$countries,'categories'=>$categories,'priceRanges'=>$priceRanges]);
+        return view('users.packages')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'packages'=>$packages,'countries'=>$countries,'categories'=>$categories,'priceRanges'=>$priceRanges,'ratingCounts' => $ratingCounts,]);
     }
     public function packageSearch(Request $request){  
         $follow_us = Footer::where('type','Follow On Us')->get();
@@ -125,8 +181,8 @@ class HomeController extends Controller
             'category_id' => 'nullable|integer|exists:categories,id',
             'duration' => 'nullable|string', 
         ]);
-        $query = Package::with(['country:id,country_name', 'type:id,type_name', 'tag:id,tag_name'])
-                        ->where('status', 1);
+        $query = Package::with(['country:id,country_name', 'type:id,type_name', 'tag:id,tag_name', 'reviews.rating'])
+                ->where('status', 1);
         
         if ($request->filled('country_id')) { 
             $query->where('country_id', $request->country_id);
@@ -165,12 +221,162 @@ class HomeController extends Controller
         if ($minPrice != null && $maxPrice != null) {
             $query->whereBetween('starting_price', [$minPrice, $maxPrice]);
         }
-        $packages = $query->paginate(12);
 
-        if ($request->ajax()) {
-            return view('users.partials.package_list', compact('packages'))->render();
+            
+        // Sorting on DB for duration and price (more efficient)
+        if ($request->filled('sort')) {
+            switch ($request->sort) {
+                case 'duration_desc':
+                    $query->orderBy('duration', 'desc');
+                    break;
+                case 'duration_asc':
+                    $query->orderBy('duration', 'asc');
+                    break;
+                case 'price_desc':
+                    $query->orderBy('starting_price', 'desc');
+                    break;
+                case 'price_asc':
+                    $query->orderBy('starting_price', 'asc');
+                    break;
+                // rating sorting handled later
+            }
         }
 
+        // Fetch filtered & sorted packages from DB
+        $allPackages = $query->get();
+
+        
+        // Calculate average_rating & rating_count for each package
+        $enrichedPackages = $allPackages->map(function ($package) {
+            $total = 0;
+            $count = 0;
+            foreach ($package->reviews as $review) {
+                foreach ($review->rating as $rating) {
+                    $total += $rating->review_rating;
+                    $count++;
+                }
+            }
+            $avg = $count ? $total / $count : 0;
+            $package->average_rating = round($avg, 1);
+            $package->rating_count = $count;
+            return $package;
+        });
+
+        // Filter by rating range if requested (e.g. "2.0-3.0")
+        if ($request->filled('rating')) {
+            [$minRating, $maxRating] = explode('-', $request->rating);
+            $minRating = (float)$minRating;
+            $maxRating = (float)$maxRating;
+
+            $enrichedPackages = $enrichedPackages->filter(function ($package) use ($minRating, $maxRating) {
+                return $package->average_rating >= $minRating && $package->average_rating < $maxRating;
+            });
+        }
+
+        // Sort by rating if requested
+        if ($request->filled('sort')) {
+            if ($request->sort === 'rating_desc') {
+                $enrichedPackages = $enrichedPackages->sortByDesc('average_rating');
+            } elseif ($request->sort === 'rating_asc') {
+                $enrichedPackages = $enrichedPackages->sortBy('average_rating');
+            }
+        }
+
+        // Pagination
+        $page = $request->input('page', 1);
+        $perPage = 12;
+        $total = $enrichedPackages->count();
+        $sliced = $enrichedPackages->slice(($page - 1) * $perPage, $perPage)->values();
+
+        $packages = new \Illuminate\Pagination\LengthAwarePaginator(
+            $sliced,
+            $total,
+            $perPage,
+            $page,
+            ['path' => url()->current(), 'query' => request()->query()]
+        );
+
+        // Calculate counts for rating filters on sidebar
+        $ratingCounts = collect([1, 2, 3, 4, 5])->mapWithKeys(function ($star) use ($enrichedPackages) {
+            $count = $enrichedPackages->filter(function ($package) use ($star) {
+                return $package->average_rating >= $star && $package->average_rating < ($star + 1);
+            })->count();
+
+            return [$star => $count];
+        })->toArray();
+        // $allPackages = $query->get();
+
+        // // Add average_rating & rating_count to each package
+        // $enrichedPackages = $allPackages->map(function ($package) {
+        //     $total = $package->reviews->flatMap(fn($r) => $r->rating)->sum('review_rating');
+        //     $count = $package->reviews->flatMap(fn($r) => $r->rating)->count();
+        //     $avg = $count ? $total / $count : 0;
+
+        //     $package->average_rating = round($avg, 1);
+        //     $package->rating_count = $count;
+
+        //     return $package;
+        // });
+
+        // // Filter by selected rating range (e.g., 2.0 - 2.9)
+        // if ($request->filled('rating')) {
+        //     [$minRating, $maxRating] = explode('-', $request->rating);
+        //     $minRating = (float)$minRating;
+        //     $maxRating = (float)$maxRating;
+
+        //     $enrichedPackages = $enrichedPackages->filter(function ($package) use ($minRating, $maxRating) {
+        //         return $package->average_rating >= $minRating && $package->average_rating < $maxRating;
+        //     });
+        // }
+
+        // // Sort
+        // if ($request->filled('sort')) { 
+        //     switch ($request->sort) {
+        //         case 'rating_desc':
+        //             $enrichedPackages = $enrichedPackages->sortByDesc('average_rating');
+        //             break;
+        //         case 'rating_asc':
+        //             $enrichedPackages = $enrichedPackages->sortBy('average_rating');
+        //             break;
+        //         case 'duration_desc':
+        //             $enrichedPackages = $enrichedPackages->sortByDesc('duration');
+        //             break;
+        //         case 'duration_asc':
+        //             $enrichedPackages = $enrichedPackages->sortBy('duration');
+        //             break;
+        //         case 'price_desc':
+        //             $enrichedPackages = $enrichedPackages->sortByDesc('starting_price');
+        //             break;
+        //         case 'price_asc':
+        //             $enrichedPackages = $enrichedPackages->sortBy('starting_price');
+        //             break;
+        //         default:
+        //             // no sorting or default sorting
+        //             break;
+        //     }
+        // }
+        // // Paginate manually
+        // $page = $request->input('page', 1);
+        // $perPage = 12;
+        // $total = $enrichedPackages->count();
+        // $sliced = $enrichedPackages->slice(($page - 1) * $perPage, $perPage)->values();
+
+        // $packages = new \Illuminate\Pagination\LengthAwarePaginator(
+        //     $sliced,
+        //     $total,
+        //     $perPage,
+        //     $page,
+        //     ['path' => url()->current(), 'query' => request()->query()]
+        // );
+
+        // // Prepare ratingCounts for sidebar (count how many packages are in each group)
+        // $ratingCounts = collect([1, 2, 3, 4, 5])->mapWithKeys(function ($star) use ($enrichedPackages) {
+        //     $count = $enrichedPackages->filter(function ($package) use ($star) {
+        //         return $package->average_rating >= $star && $package->average_rating < ($star + 1);
+        //     })->count();
+
+        //     return [$star => $count];
+        // })->toArray();
         $countries = Country::where('status', 1)->get();
         $categories = Category::where('status', 1)->get();
         $follow_us = Footer::where('type', 'Follow On Us')->get();
@@ -197,7 +403,11 @@ class HomeController extends Controller
                 'value' => $start . '-' . $end,
             ];
         }
-        return view('users.packages', compact('packages', 'countries', 'categories', 'follow_us', 'partners', 'links','priceRanges'));
+        
+        if ($request->ajax()) {
+            return view('users.partials.package_list', compact('packages'))->render();
+        }
+        return view('users.packages', compact('packages', 'countries', 'categories', 'follow_us', 'partners', 'links','priceRanges','ratingCounts'));
     }
 
     
