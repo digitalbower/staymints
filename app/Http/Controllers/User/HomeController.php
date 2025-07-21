@@ -25,7 +25,22 @@ class HomeController extends Controller
         'country:id,country_name',
         'type:id,type_name',
         'tag:id,tag_name'
-        ])->where('status',1)->get(); 
+        ])
+        ->where('status',1)
+        ->get()
+        ->transform(function ($package) {
+                $total = 0;
+                $count = 0;
+                foreach ($package->reviews as $review) {
+                    foreach ($review->rating as $rating) {
+                        $total += $rating->review_rating;
+                        $count++;
+                    }
+                }
+                $package->average_rating = number_format($count ? $total / $count : 0, 1);
+                $package->rating_count = $count;
+                return $package;
+        }); 
         $follow_us = Footer::where('type','Follow On Us')->get();
         $partners = Footer::where('type','Payment Partners')->get();
         $links = Footer::where('type','Quick Links')->get();
@@ -137,7 +152,7 @@ class HomeController extends Controller
                 'value' => $start . '-' . $end,
             ];
         }
-        return view('users.packages')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'packages'=>$packages,'countries'=>$countries,'categories'=>$categories,'priceRanges'=>$priceRanges,'ratingCounts' => $ratingCounts,]);
+        return view('users.packages')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'packages'=>$packages,'countries'=>$countries,'categories'=>$categories,'priceRanges'=>$priceRanges,'ratingCounts' => $ratingCounts,'minPrice'=>$minPrice,'maxPrice'=>$maxPrice]);
     }
     public function packageSearch(Request $request){  
         $follow_us = Footer::where('type','Follow On Us')->get();
@@ -172,7 +187,7 @@ class HomeController extends Controller
         }
 
         $packages = $query->paginate(12);
-        return view('users.packages')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'packages'=>$packages,'countries'=>$countries,'categories'=>$categories,'priceRanges'=>$priceRanges]);
+        return view('users.packages')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'packages'=>$packages,'countries'=>$countries,'categories'=>$categories,'priceRanges'=>$priceRanges,'minPrice'=>$minPrice,'maxPrice'=>$maxPrice]);
     }
     public function filterSearch(Request $request)
     { 
@@ -407,7 +422,7 @@ class HomeController extends Controller
         if ($request->ajax()) {
             return view('users.partials.package_list', compact('packages'))->render();
         }
-        return view('users.packages', compact('packages', 'countries', 'categories', 'follow_us', 'partners', 'links','priceRanges','ratingCounts'));
+        return view('users.packages', compact('packages', 'countries', 'categories', 'follow_us', 'partners', 'links','priceRanges','ratingCounts','minPrice','maxPrice'));
     }
 
     

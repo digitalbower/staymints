@@ -1033,7 +1033,7 @@ input[type="email"] {
                                                     fill="#F38035" />
                                             </svg>
                                         </div>
-                                        <span>4.8</span>
+                                        <span>{{$package->average_rating}}</span>
                                     </div>
                                 </div>
                                 <div class="package-card-content">
@@ -1074,7 +1074,7 @@ input[type="email"] {
                                             <h6>Start From</h6>
                                             <h5>AED {{ number_format($package->starting_price , 2)}}<span>/ {{$package->type?->type_name}}</span></h5>
                                         </div>
-                                        <a href="#" class="primary-btn small-primary">Book now</a>
+                                        <a href="{{route('user.package.show',$package->id)}}" class="primary-btn small-primary">Book now</a>
                                     </div>
                                 </div>
                             </div>
@@ -1084,7 +1084,7 @@ input[type="email"] {
                 <div class="row pb-80">
                     <div class="col-lg-12 d-flex align-items-center justify-content-center wow animate fadeInUp"
                         data-wow-delay="200ms" data-wow-duration="1500ms">
-                        <a href="#" class="primary-btn transparent">See All Packages</a>
+                        <a href="{{route('home.packages')}}" class="primary-btn transparent">See All Packages</a>
                     </div>
                 </div>
             </div>

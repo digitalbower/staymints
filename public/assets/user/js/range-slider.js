@@ -15,12 +15,9 @@ $(document).ready(function() {
       prefix: 'AED'
     });
     noUiSlider.create(rangeSlider, {
-      start: [10, 700],
+      start: [fullMin, fullMax],
       step: 1,
-      range: {
-        'min': [1],
-        'max': [1500]
-      },
+      range: { min: [fullMin], max: [fullMax] },
       format: moneyFormat,
       connect: true
     });

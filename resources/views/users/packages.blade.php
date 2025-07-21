@@ -45,7 +45,7 @@
                         <div class="single-widget mb-30">
                             <h5 class="widget-title">Duration</h5>
                             <div class="range-value">
-                                <span id="min-day">1</span> day to <span id="max-day">7</span> days
+                                <span id="min-day">1</span> day to <span id="max-day">30</span> days
                             </div>
 
                             <div class="rangeSlider">
@@ -62,7 +62,7 @@
                                     <span style="left: 100%;">30</span>
                                 </div>
                                 </div>
-                                <input type="hidden" name="duration" id="duration" value="1-7">
+                                <input type="hidden" name="duration" id="duration" value="1-30">
                             </div>
                         </div>
                         <div class="single-widget mb-30">
@@ -330,10 +330,10 @@
                         </div>
                     </div>
                 </form>
-                    {{-- <div class="d-flex align-items-center justify-content-between mt-5 d-lg-none px-4">
+                    <div class="d-flex align-items-center justify-content-between mt-5 d-lg-none px-4">
                         <a href="javascript:void(0);" class="btn btn-default border clear_btn">Clear</a>
-                        <a href="javascript:void(0);" class="btn btn-primary">Apply</a>
-                    </div> --}}
+                        <a href="javascript:void(0);" class="btn btn-primary apply_btn">Apply</a>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-8" id="packageList">
@@ -449,6 +449,10 @@
 </div>
 @endsection
 @push('scripts')
+<script>
+  const fullMin = {{ $minPrice }};
+  const fullMax = {{ $maxPrice }};
+</script>
 <script src="{{asset('assets/user/js/range-slider.js')}}"></script>
 <script>
 $(document).ready(function() {
@@ -586,8 +590,7 @@ $(document).ready(function() {
     
     const minValue = 1;
     const maxValue = 30;
-    let currentMin = 1;
-    let currentMax = 7;
+    let currentMin = minValue, currentMax = maxValue;
     
     // Initialize slider positions
     updateSliderPositions();
@@ -709,6 +712,41 @@ $(document).ready(function() {
             $('#showMore').show();
         });
     });
+
+</script>
+<script>
+$(document).ready(function() {
+  // Submit form when Apply is clicked (mobile)
+  $('.apply_btn').on('click', function(e) {
+    e.preventDefault();
+    $('#filterForm')[0].submit();
+  });
+
+  // Clear filters and submit form on Clear click
+  $('.clear_btn').on('click', function(e) {
+    e.preventDefault();
+
+    const form = $('#filterForm')[0];
+    form.reset();
+
+    // Reset niceSelect dropdown
+    $('#sortBy').val('').niceSelect('update');
+
+    // Uncheck rating and price checkboxes
+    $('[name="rating"]').prop('checked', false);
+    $('[name="price[]"]').prop('checked', false);
+
+    // Reset the duration slider IF you're using one
+    $('#duration').val('');
+    $('#minValue').text('1');
+    $('#maxValue').text('30');
+    // Also update slider UI accordingly...
+
+    // Submit the form to reload the page with cleared filters
+    form.submit();
+  });
+});
+
 
 </script>
 @endpush

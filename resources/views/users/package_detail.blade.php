@@ -721,7 +721,7 @@ function numberToWord($number) {
                                                         fill="#F38035"></path>
                                                 </svg>
                                             </div>
-                                            <span>4.8</span>
+                                            <span>{{ $pack->average_rating }}</span>
                                         </div>
                                     </div>
                                     <div class="package-card-content">
@@ -762,7 +762,7 @@ function numberToWord($number) {
                                                 <h6>Start From</h6>
                                                 <h5>AED {{ number_format($pack->starting_price , 2)}}<span>/ {{$pack->type?->type_name}}</span></h5>
                                             </div>
-                                            <a href="#" class="primary-btn small">Book now </a>
+                                            <a href="{{route('user.package.show',$pack->id)}}" class="primary-btn small">Book now </a>
                                         </div>
                                     </div>
                                 </div>

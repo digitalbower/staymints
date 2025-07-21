@@ -20,9 +20,23 @@ class PackageController extends Controller
         $partners = Footer::where('type','Payment Partners')->get();
         $links = Footer::where('type','Quick Links')->get();
         $package = Package::find($id);
-        $packages = Package::where('recommendation', 1)
+        $packages = Package::with('reviews.rating')
+            ->where('recommendation', 1)
             ->where('id', '!=', $id)
-            ->get();
+            ->get()
+            ->transform(function ($package) {
+                $total = 0;
+                $count = 0;
+                foreach ($package->reviews as $review) {
+                    foreach ($review->rating as $rating) {
+                        $total += $rating->review_rating;
+                        $count++;
+                    }
+                }
+                $package->average_rating = number_format($count ? $total / $count : 0, 1);
+                $package->rating_count = $count;
+                return $package;
+            });
         $gallery = json_decode($package->gallery, true);
         $slideShow = json_decode($package->slide_show, true);
         $coverImage = $slideShow[0] ?? null;  
