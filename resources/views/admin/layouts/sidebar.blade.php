@@ -69,6 +69,14 @@
           </a>
         </li>
         @endif
+          @if(auth()->guard('admin')->user()->hasPermission('view_reviews'))
+        <li class="pc-item pc-hasmenu">
+          <a href="{{route('admin.reviews.index')}}" class="pc-link">
+            <span class="pc-micon"> <i data-feather="feather"></i></span>
+            <span class="pc-mtext">Reviews</span>
+          </a>
+        </li>
+        @endif
         @if(auth()->guard('admin')->user()->hasPermission('view_seo'))
         <li class="pc-item pc-hasmenu">
           <a href="{{route('admin.seo.index')}}" class="pc-link">

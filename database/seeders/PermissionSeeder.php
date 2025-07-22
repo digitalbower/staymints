@@ -35,6 +35,9 @@ class PermissionSeeder extends Seeder
             'edit_category',
             'delete_category',
             'changestatus_category',
+            'view_reviews',
+            'reply_review',
+            'delete_review',
         ];
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);

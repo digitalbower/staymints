@@ -475,7 +475,7 @@ function numberToWord($number) {
                                                         </div>
                                                     </div>
                                                     <p>{{$review->review_description}}</p>
-                                                    <a class="reply-btn">
+                                                    {{-- <a class="reply-btn">
                                                         <svg width="15" height="15" viewBox="0 0 15 15" fill="none"
                                                             xmlns="http://www.w3.org/2000/svg">
                                                             <path fill-rule="evenodd" clip-rule="evenodd"
@@ -483,7 +483,8 @@ function numberToWord($number) {
                                                                 fill="#4DA627" />
                                                         </svg>
                                                         Reply
-                                                    </a>
+                                                    </a> --}}
+                                                    @if($review->admin_reply)
                                                     <div class="single-comment two">
                                                         <div class="image">
                                                             <img src="assets/image/team-img/comment-author-2.png" alt="">
@@ -492,14 +493,11 @@ function numberToWord($number) {
                                                             <div class="top-content">
                                                                 <h5>Admin</h5>
                                                                 <div class="date">
-                                                                    <span>Feb 2, 2025</span>
+                                                                    <span>{{ \Carbon\Carbon::parse($review->updated_at)->format('F j, Y') }}</span>
                                                                 </div>
                                                             </div>
-                                                            <p>Thank you so much for the kind words! We’re thrilled to hear you’re enjoying
-                                                                our work. Stay
-                                                                tuned—exciting things are on
-                                                                the way! #Grateful #InnovatingTogether</p>
-                                                            <a class="reply-btn">
+                                                            <p>{{$review->admin_reply}}</p>
+                                                            {{-- <a class="reply-btn">
                                                                 <svg width="15" height="15" viewBox="0 0 15 15" fill="none"
                                                                     xmlns="http://www.w3.org/2000/svg">
                                                                     <path fill-rule="evenodd" clip-rule="evenodd"
@@ -507,10 +505,11 @@ function numberToWord($number) {
                                                                         fill="#4DA627" />
                                                                 </svg>
                                                                 Reply
-                                                            </a>
+                                                            </a> --}}
                                                         </div>
 
                                                     </div>
+                                                    @endif
                                                 </div>
 
                                             </div>
@@ -780,6 +779,7 @@ function numberToWord($number) {
                     
                     </div>                  
                 @endif
+                @if($coverImage)
                 <div class="gallery-image-popup mb-30 d-none d-lg-block">
                     <div class="gallery-img-wrap active">
                         <img src="{{ asset('storage/' . $coverImage) }}" alt="" />
@@ -788,6 +788,7 @@ function numberToWord($number) {
                         </button>
                     </div>
                 </div>
+                @endif
                 <div class="toast-container position-fixed bottom-0 end-0 p-3">
                     <div id="successToast" class="toast bg-success text-white" role="alert">
                         <div class="toast-body" id="successToastMessage">

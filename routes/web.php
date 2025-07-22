@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\FooterController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\PackageController;
+use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\SeoManagementController;
 use App\Http\Controllers\User\HomeController as UserHomeController;
 use App\Http\Controllers\User\NewsletterController;
@@ -48,5 +49,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('seo', SeoManagementController::class);
         Route::resource('categories', CategoryController::class);
         Route::post('/categories/change-status', [CategoryController::class, 'changeStatus'])->name('categories.status');
+        Route::get('reviews', [ReviewController::class, 'index'])->name('reviews.index');
+        Route::post('delete-review/{id}', [ReviewController::class, 'deleteReview'])->name('reviews.delete');
+        Route::post('admin-reply', [ReviewController::class, 'adminReply'])->name('reviews.reply');
     });
 });
