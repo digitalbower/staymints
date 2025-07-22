@@ -338,79 +338,7 @@ class HomeController extends Controller
 
             return [$star => $count];
         })->toArray();
-        // $allPackages = $query->get();
 
-        // // Add average_rating & rating_count to each package
-        // $enrichedPackages = $allPackages->map(function ($package) {
-        //     $total = $package->reviews->flatMap(fn($r) => $r->rating)->sum('review_rating');
-        //     $count = $package->reviews->flatMap(fn($r) => $r->rating)->count();
-        //     $avg = $count ? $total / $count : 0;
-
-        //     $package->average_rating = round($avg, 1);
-        //     $package->rating_count = $count;
-
-        //     return $package;
-        // });
-
-        // // Filter by selected rating range (e.g., 2.0 - 2.9)
-        // if ($request->filled('rating')) {
-        //     [$minRating, $maxRating] = explode('-', $request->rating);
-        //     $minRating = (float)$minRating;
-        //     $maxRating = (float)$maxRating;
-
-        //     $enrichedPackages = $enrichedPackages->filter(function ($package) use ($minRating, $maxRating) {
-        //         return $package->average_rating >= $minRating && $package->average_rating < $maxRating;
-        //     });
-        // }
-
-        // // Sort
-        // if ($request->filled('sort')) { 
-        //     switch ($request->sort) {
-        //         case 'rating_desc':
-        //             $enrichedPackages = $enrichedPackages->sortByDesc('average_rating');
-        //             break;
-        //         case 'rating_asc':
-        //             $enrichedPackages = $enrichedPackages->sortBy('average_rating');
-        //             break;
-        //         case 'duration_desc':
-        //             $enrichedPackages = $enrichedPackages->sortByDesc('duration');
-        //             break;
-        //         case 'duration_asc':
-        //             $enrichedPackages = $enrichedPackages->sortBy('duration');
-        //             break;
-        //         case 'price_desc':
-        //             $enrichedPackages = $enrichedPackages->sortByDesc('starting_price');
-        //             break;
-        //         case 'price_asc':
-        //             $enrichedPackages = $enrichedPackages->sortBy('starting_price');
-        //             break;
-        //         default:
-        //             // no sorting or default sorting
-        //             break;
-        //     }
-        // }
-        // // Paginate manually
-        // $page = $request->input('page', 1);
-        // $perPage = 12;
-        // $total = $enrichedPackages->count();
-        // $sliced = $enrichedPackages->slice(($page - 1) * $perPage, $perPage)->values();
-
-        // $packages = new \Illuminate\Pagination\LengthAwarePaginator(
-        //     $sliced,
-        //     $total,
-        //     $perPage,
-        //     $page,
-        //     ['path' => url()->current(), 'query' => request()->query()]
-        // );
-
-        // // Prepare ratingCounts for sidebar (count how many packages are in each group)
-        // $ratingCounts = collect([1, 2, 3, 4, 5])->mapWithKeys(function ($star) use ($enrichedPackages) {
-        //     $count = $enrichedPackages->filter(function ($package) use ($star) {
-        //         return $package->average_rating >= $star && $package->average_rating < ($star + 1);
-        //     })->count();
-
-        //     return [$star => $count];
-        // })->toArray();
         $countries = Country::where('status', 1)->get();
         $categories = Category::where('status', 1)->get();
         $follow_us = Footer::where('type', 'Follow On Us')->get();
@@ -453,5 +381,23 @@ class HomeController extends Controller
         $partners = Footer::where('type','Payment Partners')->get();
         $links = Footer::where('type','Quick Links')->get();
         return view('users.contact')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'seo'=>$seo]);
+    }
+    public function termsAndCondition(){
+        $currentPath = request()->path();
+        $seo = MainSeo::where('page_url', $currentPath)->first()
+        ?? MainSeo::where('page_url', 'default')->first();  
+        $follow_us = Footer::where('type','Follow On Us')->get();
+        $partners = Footer::where('type','Payment Partners')->get();
+        $links = Footer::where('type','Quick Links')->get();
+        return view('users.terms')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'seo'=>$seo]);
+    }
+    public function privacyPolicy(){
+        $currentPath = request()->path();
+        $seo = MainSeo::where('page_url', $currentPath)->first()
+        ?? MainSeo::where('page_url', 'default')->first();  
+        $follow_us = Footer::where('type','Follow On Us')->get();
+        $partners = Footer::where('type','Payment Partners')->get();
+        $links = Footer::where('type','Quick Links')->get();
+        return view('users.privacy')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'seo'=>$seo]);
     }
 }

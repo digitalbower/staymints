@@ -1,5 +1,5 @@
 <!--  Main jQuery  -->
-<script data-cfasync="false" src="https://cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script data-cfasync="false" src="../../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
 <script src="{{asset('assets/user/js/jquery-3.7.1.min.js')}}"></script>
 <!-- Popper and Bootstrap JS -->
 <script src="{{asset('assets/user/js/popper.min.js')}}"></script>
@@ -17,9 +17,6 @@
 <script src="{{asset('assets/user/js/select2.min.js')}}"></script>
 <script src="{{asset('assets/user/js/wow.min.js')}}"></script>
 <script src="{{asset('assets/user/js/gsap.min.js')}}"></script>
-<script src="{{asset('assets/user/js/bootstrap.bundle.min.js')}}"></script>
-<script src="{{asset('assets/user/js/all.min.js')}}"></script>
-<script src="{{asset('assets/user/js/intlTelInput-jquery.min.js')}}"></script>
 <script src="{{asset('assets/user/js/main.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/js/all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

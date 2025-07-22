@@ -30,7 +30,7 @@
         @endif
 
 
-        <form action="{{ route('admin.categories.store') }}" id="categoryForm" method="POST">
+        <form action="{{ route('admin.categories.store') }}" id="categoryForm" method="POST" enctype="multipart/form-data">
             @csrf
 
             <div class="mb-3">
