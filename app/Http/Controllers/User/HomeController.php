@@ -6,12 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Country;
 use App\Models\Footer;
+use App\Models\MainSeo;
 use App\Models\Package;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function index(){
+        $currentPath = request()->path();
+        $seo = MainSeo::where('page_url', $currentPath)->first()
+        ?? MainSeo::where('page_url', 'default')->first();  
         $categories = Category::where('status',1)->get();
          $countries = Country::where('status', 1)
         ->whereHas('packages', function ($query) {
@@ -44,30 +48,42 @@ class HomeController extends Controller
         $follow_us = Footer::where('type','Follow On Us')->get();
         $partners = Footer::where('type','Payment Partners')->get();
         $links = Footer::where('type','Quick Links')->get();
-        return view('users.index')->with(['categories'=>$categories,'packages'=>$packages,'follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'countries'=>$countries]);
+        return view('users.index')->with(['categories'=>$categories,'packages'=>$packages,'follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'countries'=>$countries,'seo'=>$seo]);
     }
     public function about(){
+        $currentPath = request()->path();
+        $seo = MainSeo::where('page_url', $currentPath)->first()
+        ?? MainSeo::where('page_url', 'default')->first();  
          $follow_us = Footer::where('type','Follow On Us')->get();
         $partners = Footer::where('type','Payment Partners')->get();
         $links = Footer::where('type','Quick Links')->get();
-        return view('users.about')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links]);
+        return view('users.about')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'seo'=>$seo]);
     }
     public function login(){
+        $currentPath = request()->path();
+        $seo = MainSeo::where('page_url', $currentPath)->first()
+        ?? MainSeo::where('page_url', 'default')->first();  
         $follow_us = Footer::where('type','Follow On Us')->get();
         $partners = Footer::where('type','Payment Partners')->get();
         $links = Footer::where('type','Quick Links')->get();
-        return view('users.login')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links]);
+        return view('users.login')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'seo'=>$seo]);
     }
     public function preview(){
+        $currentPath = request()->path();
+        $seo = MainSeo::where('page_url', $currentPath)->first()
+        ?? MainSeo::where('page_url', 'default')->first();  
         $follow_us = Footer::where('type','Follow On Us')->get();
         $partners = Footer::where('type','Payment Partners')->get();
         $links = Footer::where('type','Quick Links')->get();
-        return view('users.preview')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links]);
+        return view('users.preview')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'seo'=>$seo]);
     }
     public function packages(){
         $follow_us = Footer::where('type','Follow On Us')->get();
         $partners = Footer::where('type','Payment Partners')->get();
         $links = Footer::where('type','Quick Links')->get();
+        $currentPath = request()->path();
+        $seo = MainSeo::where('page_url', $currentPath)->first()
+        ?? MainSeo::where('page_url', 'default')->first();  
         $packages = Package::with([
             'country:id,country_name',
             'type:id,type_name',
@@ -152,9 +168,12 @@ class HomeController extends Controller
                 'value' => $start . '-' . $end,
             ];
         }
-        return view('users.packages')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'packages'=>$packages,'countries'=>$countries,'categories'=>$categories,'priceRanges'=>$priceRanges,'ratingCounts' => $ratingCounts,'minPrice'=>$minPrice,'maxPrice'=>$maxPrice]);
+        return view('users.packages')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'packages'=>$packages,'countries'=>$countries,'categories'=>$categories,'priceRanges'=>$priceRanges,'ratingCounts' => $ratingCounts,'minPrice'=>$minPrice,'maxPrice'=>$maxPrice,'seo'=>$seo]);
     }
     public function packageSearch(Request $request){  
+        $currentPath = request()->path();
+        $seo = MainSeo::where('page_url', $currentPath)->first()
+        ?? MainSeo::where('page_url', 'default')->first();  
         $follow_us = Footer::where('type','Follow On Us')->get();
         $partners = Footer::where('type','Payment Partners')->get();
         $links = Footer::where('type','Quick Links')->get();
@@ -187,7 +206,7 @@ class HomeController extends Controller
         }
 
         $packages = $query->paginate(12);
-        return view('users.packages')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'packages'=>$packages,'countries'=>$countries,'categories'=>$categories,'priceRanges'=>$priceRanges,'minPrice'=>$minPrice,'maxPrice'=>$maxPrice]);
+        return view('users.packages')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'packages'=>$packages,'countries'=>$countries,'categories'=>$categories,'priceRanges'=>$priceRanges,'minPrice'=>$minPrice,'maxPrice'=>$maxPrice,'seo'=>$seo]);
     }
     public function filterSearch(Request $request)
     { 
@@ -427,9 +446,12 @@ class HomeController extends Controller
 
     
     public function contact(){
+        $currentPath = request()->path();
+        $seo = MainSeo::where('page_url', $currentPath)->first()
+        ?? MainSeo::where('page_url', 'default')->first();  
         $follow_us = Footer::where('type','Follow On Us')->get();
         $partners = Footer::where('type','Payment Partners')->get();
         $links = Footer::where('type','Quick Links')->get();
-        return view('users.contact')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links]);
+        return view('users.contact')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'seo'=>$seo]);
     }
 }

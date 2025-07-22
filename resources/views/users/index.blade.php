@@ -1019,7 +1019,7 @@ input[type="email"] {
                             data-wow-duration="1500ms">
                             <div class="package-card">
                                 <div class="package-card-img-wrap">
-                                    <a href="#" class="card-img"><img
+                                    <a href="{{route('user.package.show',$package->slug)}}" class="card-img"><img
                                             src="{{ asset('storage/' . $package->image) }}" alt="" /></a>
                                     <div class="batch">
                                         <span class="featured">{{$package->tag?->tag_name}}</span>
@@ -1074,7 +1074,7 @@ input[type="email"] {
                                             <h6>Start From</h6>
                                             <h5>AED {{ number_format($package->starting_price , 2)}}<span>/ {{$package->type?->type_name}}</span></h5>
                                         </div>
-                                        <a href="{{route('user.package.show',$package->id)}}" class="primary-btn small-primary">Book now</a>
+                                        <a href="{{route('user.package.show',$package->slug)}}" class="primary-btn small-primary">Book now</a>
                                     </div>
                                 </div>
                             </div>

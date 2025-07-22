@@ -15,14 +15,18 @@ use Illuminate\Support\Facades\Auth;
 
 class PackageController extends Controller
 {
-    public function packageDetail($id){
+    public function packageDetail($slug){
         $follow_us = Footer::where('type','Follow On Us')->get();
         $partners = Footer::where('type','Payment Partners')->get();
         $links = Footer::where('type','Quick Links')->get();
-        $package = Package::find($id);
+        $currentPath = request()->path();  
+        $slug = str_replace('package/', '', $currentPath);
+        $slug = trim($slug, '/');
+        $seo = Package::where('slug', $slug)->first();
+        $package = Package::where('slug', $slug)->firstOrFail();
         $packages = Package::with('reviews.rating')
             ->where('recommendation', 1)
-            ->where('id', '!=', $id)
+            ->where('id', '!=',  $package->id)
             ->get()
             ->transform(function ($package) {
                 $total = 0;
@@ -87,7 +91,7 @@ class PackageController extends Controller
         'exclude_infos'=>$exclude_infos,'slideShow'=>$slideShow,'itineraries'=>$itineraries,
         'coverImage'=>$coverImage,'services'=>$services,'averageRating' => $averageRating,
         'reviewCount' => $reviewCount,'percentages' => $percentages,'averagePerCategory' => $averagePerCategory,
-        'reviewsWithAverages'=>$reviewsWithAverages,'packages'=>$packages]);
+        'reviewsWithAverages'=>$reviewsWithAverages,'packages'=>$packages,'seo'=>$seo]);
     }
     public function booking(Request $request) {  
         $validated = $request->validate([

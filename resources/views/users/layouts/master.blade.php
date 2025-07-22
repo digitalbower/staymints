@@ -7,6 +7,18 @@
 <meta name="keywords" content="" />
 <link rel="apple-touch-icon" sizes="180x180" href="{{asset('assets/user/image/favicon.ico')}}" />
 <meta name="csrf-token" content="{{ csrf_token() }}">
+@if($seo)
+    <title>{{ $seo->meta_title ?? 'Default' }}</title>
+    <meta name="description" content="{{ $seo->meta_description }}">
+    <meta property="og:title" content="{{ $seo->og_title }}">
+    <meta property="og:description" content="{{ $seo->og_description }}">
+    @if($seo->og_image)
+        <meta property="og:image" content="{{ asset('storage/' . $seo->og_image) }}">
+    @endif
+    @if($seo->schema)
+        <script type="application/ld+json">{!! $seo->schema !!}</script>
+    @endif
+  @endif
 <title>TRAVEL WEBSITE || HOME</title>
 @include('users.layouts.headercss')
 </head>

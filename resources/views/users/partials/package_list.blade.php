@@ -37,7 +37,7 @@
     <div class="col-md-6  wow animate fadeInUp" data-wow-delay="{{ ($loop->index + 1) * 200 }}ms" data-wow-duration="1500ms">
         <div class="package-card">
             <div class="package-card-img-wrap">
-                <a href="{{route('user.package.show',$package->id)}}" class="card-img"><img
+                <a href="{{route('user.package.show',$package->slug)}}" class="card-img"><img
                         src="{{ asset('storage/' . $package->image) }}" alt="" /></a>
                 <div class="batch"><span class="featured">{{$package->tag?->tag_name}}</span>
                 </div>
@@ -58,7 +58,7 @@
                     <div class="d-flex align-items-start justify-content-between">
                         <div class="">
                             <h5>
-                                <a href="{{route('user.package.show',$package->id)}}">{{$package->package_name}}</a>
+                                <a href="{{route('user.package.show',$package->slug)}}">{{$package->package_name}}</a>
                             </h5>
                             <span class="location">{{$package->country?->country_name}} </span>
                         </div>
