@@ -928,7 +928,7 @@ input[type="email"] {
                                                 <p>
                                                    {{$category->category_description}}
                                                 </p>
-                                                <a href="#" class="see-btn">
+                                                <a href="{{ route('home.packages') }}?category_id={{ $category->id }}" class="see-btn">
                                                     See the Deals
                                                 </a>
                                             </div>

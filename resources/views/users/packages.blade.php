@@ -72,7 +72,7 @@
                                     <li class="single-list" style="{{ $index > 4 ? 'display: none;' : '' }}"> 
                                         <div class="checkbox-item">
                                             <label>
-                                                <input type="radio" id="category_id" class="input-radio active" name="category_id" value="{{ $category->id }}"  {{ request('category_id') == $category->id ? 'checked' : '' }}>
+                                                <input type="radio" id="category_id" class="input-radio active" name="category_id" value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'checked' : '' }}>
                                                 {{ $category->category_name }}
                                             </label>
                                         </div> 
@@ -556,6 +556,10 @@ $(document).ready(function() {
 
   // Initialize niceSelect on page load for the first time
   $('#sortBy').niceSelect();
+
+   if ($('#filterForm input:checked').length > 0 || $('#filterForm select').val()) {
+        applyFilters(); // Trigger AJAX on load
+    }
 });
 function applyFilters() {
     let formData = $('#filterForm').serializeArray();

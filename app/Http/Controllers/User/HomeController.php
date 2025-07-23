@@ -344,6 +344,9 @@ class HomeController extends Controller
         $follow_us = Footer::where('type', 'Follow On Us')->get();
         $partners = Footer::where('type', 'Payment Partners')->get();
         $links = Footer::where('type', 'Quick Links')->get();
+        $currentPath = request()->path();
+        $seo = MainSeo::where('page_url', $currentPath)->first()
+        ?? MainSeo::where('page_url', 'default')->first();  
         // Get min and max starting price
         $minPrice = Package::min('starting_price');
         $maxPrice = Package::max('starting_price');
@@ -369,7 +372,7 @@ class HomeController extends Controller
         if ($request->ajax()) {
             return view('users.partials.package_list', compact('packages'))->render();
         }
-        return view('users.packages', compact('packages', 'countries', 'categories', 'follow_us', 'partners', 'links','priceRanges','ratingCounts','minPrice','maxPrice'));
+        return view('users.packages', compact('packages', 'countries', 'categories', 'follow_us', 'partners', 'links','priceRanges','ratingCounts','minPrice','maxPrice','seo'));
     }
 
     

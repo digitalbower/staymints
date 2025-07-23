@@ -87,7 +87,7 @@
                             </div>
                             <div class="col-lg-12">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="contactCheck" />
+                                    <input class="form-check-input" type="checkbox" name="agree_terms" value="1" {{ old('agree_terms', 1) ? 'checked' : '' }} id="contactCheck" />
                                     <label class="form-check-label" for="contactCheck">
                                         Agree to our <span><a href="{{route('home.terms')}}">Terms of service</a></span> and
                                         <span><a href="{{route('home.privacy')}}">Privacy Policy</a></span>
