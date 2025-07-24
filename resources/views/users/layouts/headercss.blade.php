@@ -14,5 +14,7 @@
 <link rel="stylesheet" href="{{asset('assets/user/css/main.css')}}" />
 <link rel="stylesheet" href="{{asset('assets/user/css/new.css')}}" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
 
 @stack('styles')

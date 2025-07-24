@@ -8,7 +8,9 @@ use App\Models\Country;
 use App\Models\Footer;
 use App\Models\MainSeo;
 use App\Models\Package;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -75,7 +77,25 @@ class HomeController extends Controller
         $follow_us = Footer::where('type','Follow On Us')->get();
         $partners = Footer::where('type','Payment Partners')->get();
         $links = Footer::where('type','Quick Links')->get();
-        return view('users.preview')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'seo'=>$seo]);
+        $user = Auth::user();
+        return view('users.preview')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'seo'=>$seo,'user'=>$user]);
+    }
+    public function previewSubmit(Request $request)
+    {
+        $request->validate([
+           'phone' => 'required',
+           'agree_terms' => 'nullable|boolean',
+
+        ]);
+        $data = $request->all();
+        $user = User::where('id', $data['user_id'])->first(); 
+        $user->update([
+            'phone' => $data['phone'],
+            'marketing' => $data['marketing'] ?? 0,
+            'agree_terms'=>$data['agree_terms'] ?? 0,
+        ]);
+        Auth::login($user);
+        return redirect()->route('home.index');
     }
     public function packages(){
         $follow_us = Footer::where('type','Follow On Us')->get();

@@ -8,6 +8,8 @@ use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\SeoManagementController;
+use App\Http\Controllers\User\Auth\GoogleController;
+use App\Http\Controllers\User\AuthController;
 use App\Http\Controllers\User\ContactController;
 use App\Http\Controllers\User\HomeController as UserHomeController;
 use App\Http\Controllers\User\NewsletterController;
@@ -21,9 +23,17 @@ Route::get('/privacy', [UserHomeController::class, 'privacyPolicy'])->name('home
 Route::get('/terms', [UserHomeController::class, 'termsAndCondition'])->name('home.terms');
 Route::get('/login', [UserHomeController::class, 'login'])->name('home.login');
 Route::get('/preview', [UserHomeController::class, 'preview'])->name('home.preview');
+Route::post('/preview-submit', [UserHomeController::class, 'previewSubmit'])->name('home.preview.submit');
 Route::get('/packages', [UserHomeController::class, 'packages'])->name('home.packages');
 Route::post('/subscribe', [NewsletterController::class, 'subscribe'])->name('subscribe');
+Route::post('/register/generate-otp', [AuthController::class, 'generateOtp'])->name('generate.otp');
+Route::post('/register/verify-otp', [AuthController::class, 'verifyOtp'])->name('verify.otp');
+Route::post('/login/generate-otp', [AuthController::class, 'login'])->name('login.generate.otp');
+Route::post('/login/verify-otp', [AuthController::class, 'verifyLoginOtp'])->name('login.verify.otp');
+Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.redirect.google');
+Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 Route::name('user.')->group(function () {
+    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     Route::post('/contact-us', [ContactController::class, 'contactSubmit'])->name('contact');
     Route::prefix('package')->name('package.')->group(function () {
         Route::get('/search', [UserHomeController::class, 'packageSearch'])->name('search');
@@ -33,6 +43,8 @@ Route::name('user.')->group(function () {
         Route::post('/booking-confirmation', [UserPackageController::class, 'bookingConfirmation'])->name('booking_confirmation');
         Route::post('/review', [UserPackageController::class, 'review'])->name('review');
         Route::post('/wishlist/{packageId}', [UserPackageController::class, 'wishlist'])->name('wishlist');
+        Route::post('/get-quote', [UserPackageController::class, 'getQuote'])->name('get_quote');
+        
     });
 
 });
@@ -40,10 +52,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // Admin Authentication
     Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('login');
     Route::post('login', [AdminAuthController::class, 'adminLogin'])->name('login.post');
-    Route::post('logout', [AdminAuthController::class, 'logout'])->name('logout');
+  
 
     // Admin Panel Routes (Requires Admin Middleware)
     Route::middleware(['admin'])->group(function () {
+        Route::post('logout', [AdminAuthController::class, 'logout'])->name('logout');
         Route::get('/', [HomeController::class, 'index'])->name('index');
         Route::resource('users', AdminUserController::class);
         Route::resource('footers', FooterController::class);

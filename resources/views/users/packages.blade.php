@@ -362,7 +362,7 @@
             </a>
         </li>
         <li class="border-bottom pb-3 mb-3">
-            <a class="d-block" href="javascript:void(0);">
+            <a class="d-block" href="https://wa.me/919876543210?text=Hi">
                 <div class="d-flex align-items-md-center">
                     <div class="circle_ me-3"><i class="fa-regular fa-message"></i></div>
                     <div class="">
@@ -386,64 +386,77 @@
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body p-4">
-        <form action="" method="post">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="">Destination</label>
-                        <select name="" class="form-control w-100">
-                            <option value="">Kerela</option>
-                            <option value="">Goa</option>
-                        </select>
-                    </div>
+        <form action="{{route('user.package.get_quote')}}" id="getQuoteForm" method="post">
+            @csrf
+            <div class="modal-body p-4">
+            @if (session('success'))
+                <div class="alert alert-success" id="modalSuccessMessage">
+                    {{ session('success') }}
                 </div>
-
-                <div class="col-md-6 mt-4 mt-md-0">
-                    <div class="form-group">
-                        <label for="">Departure City</label>
-                        <select name="" class="form-control w-100">
-                            <option value="">Kerela</option>
-                            <option value="">Goa</option>
-                        </select>
+            @endif
+                <div class="row">
+                    <div class="col-md-6 mt-4">
+                        <div class="form-group">
+                            <label for="first_name">First Name</label>
+                            <input type="text" name="first_name" class="form-control" id="first_name" placeholder="First Name">
+                            @error('first_name')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
-                </div>
 
-                <div class="col-md-6 mt-4">
-                    <div class="form-group">
-                        <label for="">Full Name</label>
-                        <input type="text" class="form-control" placeholder="Name">
+                    <div class="col-md-6 mt-4">
+                        <div class="form-group">
+                            <label for="last_name">Last Name</label>
+                            <input type="text" name="last_name" class="form-control" id="last_name" placeholder="Last Name">
+
+                        </div>
                     </div>
-                </div>
 
-                <div class="col-md-6 mt-4">
-                    <div class="form-group">
-                        <label for="">Phone</label>
-                        <input type="text" class="form-control" placeholder="Phone Number">
+                    <div class="col-md-12 mt-4">
+                        <div class="form-group">
+                            <label for="email">Email ID</label>
+                            <input type="email" class="form-control" name="email" placeholder="Email Address">
+                            @error('email')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
-                </div>
-
-                <div class="col-md-12 mt-4">
-                    <div class="form-group">
-                        <label for="">Email ID</label>
-                        <input type="email" class="form-control" placeholder="Email Address">
+                    <div class="col-md-12 mt-4">
+                        <div class="form-group">
+                            <label for="phone">Phone</label>
+                            <input type="tel" name="phone" class="form-control"  id="phone" placeholder="Phone Number">
+                            @error('phone')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
-                </div>
-
-                <div class="col-md-12 mt-4">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            I have read and agree to the <a href="#">User Agreement</a> & <a href="#">Privacy Policy</a>.
-                        </label>
+                    <div class="col-md-12 mt-4">
+                        <div class="form-group">
+                            <label for="requirments">Requirments</label>
+                            <textarea name="requirments" class="form-control">{{old('requirments')}}</textarea>
+                            @error('requirments')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-md-12 mt-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="agree_terms" value="1" {{ old('agree_terms', 1) ? 'checked' : '' }} id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                I have read and agree to the <a href="{{route('home.terms')}}">User Agreement</a> & <a href="{{route('home.privacy')}}">Privacy Policy</a>.
+                            </label>
+                        </div>
+                        @error('agree_terms')
+                                <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
             </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
         </form>
-      </div>
-      <div class="modal-footer border-0 pt-0">
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Submit</button>
-      </div>
     </div>
   </div>
 </div>
@@ -753,4 +766,62 @@ $(document).ready(function() {
 
 
 </script>
+<script>
+    $(function () {
+    $('#getQuoteForm').validate({
+        rules: {
+            first_name: {
+                required: true,
+            },
+            phone: {
+                required: true,
+                digits: true,
+                minlength: 10
+            },
+            email: {
+                required: true,
+                email: true
+            },
+            agree_terms: {
+                required: true
+            },
+            requirments: {
+                required:true
+            }
+        },
+        messages: {
+            first_name: "Please enter your first name",
+            phone: {
+                required: "Phone number is required",
+                digits: "Only numbers allowed",
+                minlength: "Enter a valid phone number"
+            },
+            email: "Please enter a valid email address",
+            agree_terms: "You must accept the terms and conditions",
+            requirments: "Please enter your requirments"
+        },
+        errorElement: 'div',
+        errorClass: 'text-danger'
+    });
+
+});
+</script>
+@if ($errors->any())
+<script>
+    var myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+    myModal.show();
+</script>
+@endif
+@if (session('success'))
+<script>
+    const modalEl = document.getElementById('exampleModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    modal.show();
+
+    // Auto-close after 3 seconds
+    setTimeout(() => {
+        modal.hide();
+    }, 3000);
+</script>
+@endif
 @endpush

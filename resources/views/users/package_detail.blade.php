@@ -123,10 +123,19 @@ function numberToWord($number) {
                             </div>
                         </div>
 
-                        <a href="#" class="add" data-id="{{ $package->id }}">
-                            <i class="bi bi-heart"></i>
-                            Add to Wishlist
+                        @php
+                            $isWishlisted = auth()->check() && auth()->user()->wishlists->contains($package->id);
+                        @endphp
+
+                        <a href="#"
+                            class="add"
+                            data-id="{{ $package->id }}"
+                            data-status="{{ $isWishlisted ? 'added' : 'not-added' }}"
+                            id="wishlist-btn-{{ $package->id }}">
+                            <i class="bi {{ $isWishlisted ? 'bi-heart-fill text-danger' : 'bi-heart' }}"></i>
+                            {{ $isWishlisted ? 'Wishlisted' : 'Add to Wishlist' }}
                         </a>
+
                     </li>
                 </ul>
                 <ul class="feature-area-wrap">
@@ -969,7 +978,7 @@ function numberToWord($number) {
             </a>
         </li>
         <li class="border-bottom pb-3 mb-3">
-            <a class="d-block" href="javascript:void(0);">
+            <a class="d-block" href="https://wa.me/919876543210?text=Hi">
                 <div class="d-flex align-items-md-center">
                     <div class="circle_ me-3"><i class="fa-regular fa-message"></i></div>
                     <div class="">
@@ -1005,10 +1014,18 @@ function numberToWord($number) {
 
             
                     <input type="hidden" id="id" name="id">
-                    <input type="text" name="first_name" id="first_name" placeholder="First Name">
-                    <input type="text" name="last_name" id="last_name" placeholder="Last Name">
-                    <input type="email" name="email" id="email" placeholder="Email">
-                    <input type="tel" name="phone" id="phone" placeholder="Phone Number">
+                    <input type="text" name="first_name" id="first_name" placeholder="First Name"
+                        value="{{ Auth::check() ? Auth::user()->first_name : '' }}">
+
+                    <input type="text" name="last_name" id="last_name" placeholder="Last Name"
+                        value="{{ Auth::check() ? Auth::user()->last_name : '' }}">
+
+                    <input type="email" name="email" id="email" placeholder="Email"
+                        value="{{ Auth::check() ? Auth::user()->email : '' }}">
+
+                    <input type="tel" name="phone" id="phone" placeholder="Phone Number"
+                        value="{{ Auth::check() ? Auth::user()->phone : '' }}">
+
                 
             </div>
             <div class="modal-footer">
@@ -1029,69 +1046,85 @@ function numberToWord($number) {
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body p-4">
-        <form action="" method="post">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="">Destination</label>
-                        <select name="" class="form-control w-100">
-                            <option value="">Kerela</option>
-                            <option value="">Goa</option>
-                        </select>
-                    </div>
+        <form action="{{route('user.package.get_quote')}}" id="getQuoteForm" method="post">
+            @csrf
+            <div class="modal-body p-4">
+            @if (session('success'))
+                <div class="alert alert-success" id="modalSuccessMessage">
+                    {{ session('success') }}
                 </div>
-
-                <div class="col-md-6 mt-4 mt-md-0">
-                    <div class="form-group">
-                        <label for="">Departure City</label>
-                        <select name="" class="form-control w-100">
-                            <option value="">Kerela</option>
-                            <option value="">Goa</option>
-                        </select>
+            @endif
+                <div class="row">
+                    <div class="col-md-6 mt-4">
+                        <div class="form-group">
+                            <label for="first_name">First Name</label>
+                            <input type="text" name="first_name" class="form-control" id="first_name" placeholder="First Name">
+                            @error('first_name')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
-                </div>
 
-                <div class="col-md-6 mt-4">
-                    <div class="form-group">
-                        <label for="">Full Name</label>
-                        <input type="text" class="form-control" placeholder="Name">
+                    <div class="col-md-6 mt-4">
+                        <div class="form-group">
+                            <label for="last_name">Last Name</label>
+                            <input type="text" name="last_name" class="form-control" id="last_name" placeholder="Last Name">
+
+                        </div>
                     </div>
-                </div>
 
-                <div class="col-md-6 mt-4">
-                    <div class="form-group">
-                        <label for="">Phone</label>
-                        <input type="text" class="form-control" placeholder="Phone Number">
+                    <div class="col-md-12 mt-4">
+                        <div class="form-group">
+                            <label for="email">Email ID</label>
+                            <input type="email" class="form-control" name="email" placeholder="Email Address">
+                            @error('email')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
-                </div>
-
-                <div class="col-md-12 mt-4">
-                    <div class="form-group">
-                        <label for="">Email ID</label>
-                        <input type="email" class="form-control" placeholder="Email Address">
+                    <div class="col-md-12 mt-4">
+                        <div class="form-group">
+                            <label for="phone">Phone</label>
+                            <input type="tel" name="phone" class="form-control"  id="phone" placeholder="Phone Number">
+                            @error('phone')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
-                </div>
-
-                <div class="col-md-12 mt-4">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            I have read and agree to the <a href="#">User Agreement</a> & <a href="#">Privacy Policy</a>.
-                        </label>
+                    <div class="col-md-12 mt-4">
+                        <div class="form-group">
+                            <label for="requirments">Requirments</label>
+                            <textarea name="requirments" class="form-control" >{{old('requirments')}}</textarea>
+                            @error('requirments')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-md-12 mt-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="agree_terms" value="1" {{ old('agree_terms', 1) ? 'checked' : '' }} id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                I have read and agree to the <a href="{{route('home.terms')}}">User Agreement</a> & <a href="{{route('home.privacy')}}">Privacy Policy</a>.
+                            </label>
+                        </div>
+                        @error('agree_terms')
+                                <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
             </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
         </form>
-      </div>
-      <div class="modal-footer border-0 pt-0">
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Submit</button>
-      </div>
     </div>
   </div>
 </div>
 @endsection
 @push('scripts')
+<script>
+    const isUserLoggedIn = @json(auth()->check());
+</script>
 <script>
 $(document).ready(function() {
 $(".incustom_trip").click(function() {
@@ -1190,7 +1223,7 @@ $('#bookingForm').on('submit', function (e) {
     let formData = new FormData(this);
 
     $.ajax({
-        url: '/user/package/booking',
+        url: '/package/booking',
         method: 'POST',
         data: formData,
         processData: false,
@@ -1240,7 +1273,7 @@ $(document).ready(function () {
         let formData = new FormData(this);
 
         $.ajax({
-            url: '/user/package/booking-confirmation', // Your Laravel route
+            url: '/package/booking-confirmation', 
             method: 'POST',
             data: formData,
             processData: false,
@@ -1352,7 +1385,7 @@ $(document).ready(function () {
     };
 
     $.ajax({
-        url: '/user/package/review', 
+        url: '/package/review', 
         type: 'POST',
         contentType: 'application/json',
         headers: {
@@ -1391,31 +1424,43 @@ $(document).ready(function () {
 
 </script>
 <script>
-    $(document).ready(function() {
-    $('.add').on('click', function(e) {
+ $(document).ready(function () {
+    $('.add').on('click', function (e) {
         e.preventDefault();
 
+        // ✅ Check if user is logged in
+        if (!isUserLoggedIn) {
+            const currentUrl = window.location.href;
+            window.location.href = "/login?redirect=" + encodeURIComponent(currentUrl);
+            return;
+        }
+
+        // ✅ If logged in, proceed with wishlist AJAX
         var $this = $(this);
         var packageId = $this.data('id');
         var $icon = $this.find('i');
         var token = $('meta[name="csrf-token"]').attr('content');
 
         $.ajax({
-            url: '/user/package/wishlist/' + packageId,
+            url: '/package/wishlist/' + packageId,
             type: 'POST',
             headers: {
                 'X-CSRF-TOKEN': token
             },
             dataType: 'json',
-            success: function(data) {
-                
+            success: function (data) {
                 $('#successToastMessage').html(data.message);
-               let toast = new bootstrap.Toast(document.getElementById('successToast'));
+
+                let toast = new bootstrap.Toast(document.getElementById('successToast'));
                 toast.show();
-                setTimeout(() => location.reload(), 3000); 
+
+                $this.html('<i class="bi bi-heart-fill text-danger"></i> Wishlisted');
+                $this.addClass('wishlisted'); // optional styling
+                $this.removeClass('add');     // prevent repeat click (optional)
+                $this.css('pointer-events', 'none'); // disable further clicks (optional)
+                // setTimeout(() => location.reload(), 3000);
             },
-              
-             error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 let errors = xhr.responseJSON?.errors;
                 let message;
 
@@ -1443,4 +1488,63 @@ function copyToClipboard(text) {
     });
 }
 </script>
+<script>
+    $(function () {
+    $('#getQuoteForm').validate({
+        rules: {
+            first_name: {
+                required: true,
+            },
+            phone: {
+                required: true,
+                digits: true,
+                minlength: 10
+            },
+            email: {
+                required: true,
+                email: true
+            },
+            agree_terms: {
+                required: true
+            },
+            requirments: {
+                required:true
+            }
+        },
+        messages: {
+            first_name: "Please enter your first name",
+            phone: {
+                required: "Phone number is required",
+                digits: "Only numbers allowed",
+                minlength: "Enter a valid phone number"
+            },
+            email: "Please enter a valid email address",
+            agree_terms: "You must accept the terms and conditions",
+            requirments: "Please enter your requirments"
+        },
+        errorElement: 'div',
+        errorClass: 'text-danger'
+    });
+
+});
+</script>
+@if ($errors->any())
+<script>
+    var myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+    myModal.show();
+</script>
+@endif
+@if (session('success'))
+<script>
+    const modalEl = document.getElementById('exampleModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    modal.show();
+
+    // Auto-close after 3 seconds
+    setTimeout(() => {
+        modal.hide();
+    }, 3000);
+</script>
+@endif
+
 @endpush

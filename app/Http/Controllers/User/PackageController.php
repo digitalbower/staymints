@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\BookingInfo;
 use App\Models\Footer;
+use App\Models\GetQuote;
 use App\Models\Package;
 use App\Models\Rating;
 use App\Models\Review;
@@ -150,11 +151,27 @@ class PackageController extends Controller
         ]);
     }
     public function wishlist($package_id){
-        Wishlist::create([
-            'user_id'=>Auth::user()->id,
-            'package_id'=>$package_id]); 
-        return response()->json([
-        'message' => 'Added to wishlist',
+        $user = auth()->user();
+
+        // Prevent duplicate entries
+        if ($user->wishlists()->where('package_id', $package_id)->exists()) {
+            return response()->json(['message' => 'Already in your wishlist.']);
+        }
+
+        $user->wishlists()->attach($package_id);
+
+        return response()->json(['message' => 'Added to your wishlist!']);
+    }
+    
+    public function getQuote(Request $request){
+         $request->validate([
+            'first_name' => 'required',
+            'email' => 'required|email',
+            'phone' => 'required',
+            'agree_terms' => 'required',
         ]);
+        $data = $request->all(); 
+        GetQuote::create($data); 
+        return redirect()->back()->with('success', 'Our holiday expert will get in touch with you.');
     }
 }

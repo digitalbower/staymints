@@ -10,46 +10,43 @@
             </div>
 
             <div class="col-md-12 col-lg-12 col-xl-6">
-                <form action="" class="login-sign-form">
+                <form id="previewForm" method="POST" action="{{route('home.preview.submit')}}" class="login-sign-form">
+                    @csrf
                     <h3>Create an Account</h3>
                     <p>Please enter your credential Details.</p>
+                    <input type="hidden" name="user_id" value="{{auth()->user()->id}}">
                     <div class="form-group mt-4">
                         <label for="">Enter Your Full Name</label>
-                        <input type="text" class="form-control mt-1" placeholder="johnsm" disabled>
+                        <input type="text" class="form-control mt-1" value="{{$user->name}}" disabled>
                     </div>
 
                     <div class="form-group mt-4">
                         <label class="d-block" for="">Enter Your Phone number</label>
-                        <input type="text" id="mobile_code" class="form-control mt-1" placeholder="(00) 123 456 7890" name="name" disabled>
+                        <input type="text" id="mobile_code" class="form-control mt-1" placeholder="Enter phone number" name="phone">
                     </div>
 
                     <div class="form-group mt-4">
                         <label class="d-block" for="">Enter Your Email</label>
                         <div class="position-relative">
-                            <input type="email" class="form-control mt-1" placeholder="info@gmail.com" disabled>
-                            <!-- <a href="javascript:void(0);" class="otp-send btn btn-primary">Send OTP</a> -->
+                            <input type="email" name="email" class="form-control mt-1" placeholder="info@gmail.com" value="{{$user->email}}" disabled>
                         </div>
                     </div>
 
-                    <div class="form-check mt-4 mb-2">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked disabled>
-                        <label class="form-check-label" for="flexCheckDefault">
+                     <div class="form-check mt-4 mb-2">
+                        <input class="form-check-input" type="checkbox" name="agree_terms" id="terms" value="1" {{ old('agree_terms', 1) ? 'checked' : '' }} id="terms">
+                        <label class="form-check-label" for="terms">
                             I am accepting all Terms & Conditions
                         </label>
                     </div>
 
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefaultone" disabled>
-                        <label class="form-check-label" for="flexCheckDefaultone">
+                        <input class="form-check-input" type="checkbox" name="marketing" id="marketing" value="1"  {{ old('marketing', 1) ? 'checked' : '' }} id="marketing">
+                        <label class="form-check-label" for="marketing">
                             Are you interested to receive marketing communications
                         </label>
                     </div>
                     
-                    <button type="button" class="btn btn-primary text-uppercase w-100 mt-5">Sign Up</button>
-
-                    <!-- <div class="mt-5 text-center">
-                        <p>Already have an account? <a href="javascript:void(0);" class="login-btn">Login</a></p>
-                    </div> -->
+                    <button type="submit" class="btn btn-primary text-uppercase w-100 mt-5">Sign Up</button>
                 </form>
             </div>
         </div>
@@ -72,6 +69,33 @@ $(window).scroll(function () {
     } else {
         $('header').removeClass("fixed");
     }
+});
+</script>
+<script>
+    $(function () {
+    // 🔹 Set up jQuery Validation for the registration form
+    $('#previewForm').validate({
+        rules: {
+            phone: {
+                required: true,
+                digits: true,
+                minlength: 10
+            },
+            agree_terms: {
+                required: true
+            }
+        },
+        messages: {
+            phone: {
+                required: "Phone number is required",
+                digits: "Only numbers allowed",
+                minlength: "Enter a valid phone number"
+            },
+            agree_terms: "You must accept the terms and conditions"
+        },
+        errorElement: 'div',
+        errorClass: 'text-danger'
+    });
 });
 </script>
 @endpush

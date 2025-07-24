@@ -20,7 +20,12 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'password',
+        'otp',
+        'google_id',
+        'phone',
+        'agree_terms',
+        'marketing',
+        'email_verified_at'
     ];
 
     /**
@@ -44,5 +49,9 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    public function wishlists()
+    {
+        return $this->belongsToMany(Package::class, 'wishlists');
     }
 }
