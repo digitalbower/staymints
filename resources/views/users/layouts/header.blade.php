@@ -22,7 +22,7 @@
             <ul class="menu-list">
                 <li class="menu-item-has-children active"><a href="{{route('home.index')}}" class="drop-down">Home</a></li>
                 <li><a href="{{route('home.about')}}" class="drop-down">About</a></li>
-                <li><a href="{{route('home.packages')}}" class="drop-down">Packages</a></li>
+                <li><a href="{{route('user.packages.index')}}" class="drop-down">Packages</a></li>
                 <li><a href="{{route('home.contact')}}" class="drop-down">Contact</a></li>
             </ul>
         </div>
@@ -37,7 +37,7 @@
                         </svg>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">My Profile</a></li>
+                        <li><a class="dropdown-item" href="{{ route('user.profile') }}">My Profile</a></li>
                         <li><form id="logout-form" action="{{ route('user.logout') }}" method="POST" class="d-none">
                             @csrf
                             </form>

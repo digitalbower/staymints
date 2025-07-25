@@ -20,7 +20,7 @@
                             </ul>
                         </div>
                     @endif
-                    <form id="contactForm" action="{{route('user.contact')}}" method="post">
+                    <form id="contactForm" action="{{route('home.contact_us')}}" method="post">
                         @csrf
                         <div class="form-title">
                             <h2>Drop us a Line</h2>

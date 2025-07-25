@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\SeoManagementController;
+use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\Auth\GoogleController;
 use App\Http\Controllers\User\AuthController;
 use App\Http\Controllers\User\ContactController;
@@ -16,44 +17,47 @@ use App\Http\Controllers\User\NewsletterController;
 use App\Http\Controllers\User\PackageController as UserPackageController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [UserHomeController::class, 'index'])->name('home.index');
-Route::get('/about', [UserHomeController::class, 'about'])->name('home.about');
-Route::get('/contact', [UserHomeController::class, 'contact'])->name('home.contact');
-Route::get('/privacy', [UserHomeController::class, 'privacyPolicy'])->name('home.privacy');
-Route::get('/terms', [UserHomeController::class, 'termsAndCondition'])->name('home.terms');
-Route::get('/login', [UserHomeController::class, 'login'])->name('home.login');
-Route::get('/preview', [UserHomeController::class, 'preview'])->name('home.preview');
-Route::post('/preview-submit', [UserHomeController::class, 'previewSubmit'])->name('home.preview.submit');
-Route::get('/packages', [UserHomeController::class, 'packages'])->name('home.packages');
+Route::name('home.')->group(function () {
+    Route::get('/', [UserHomeController::class, 'index'])->name('index');
+    Route::get('/about', [UserHomeController::class, 'about'])->name('about');
+    Route::get('/contact', [ContactController::class, 'contact'])->name('contact');
+    Route::get('/privacy', [ContactController::class, 'privacyPolicy'])->name('privacy');
+    Route::get('/terms', [ContactController::class, 'termsAndCondition'])->name('terms');
+    Route::post('/contact-us', [ContactController::class, 'contactSubmit'])->name('contact_us');
+    Route::get('/login', [AuthController::class, 'login'])->name('login');
+    Route::get('/preview', [AuthController::class, 'preview'])->name('preview');
+    Route::post('/preview-submit', [AuthController::class, 'previewSubmit'])->name('preview.submit');
+});
 Route::post('/subscribe', [NewsletterController::class, 'subscribe'])->name('subscribe');
 Route::post('/register/generate-otp', [AuthController::class, 'generateOtp'])->name('generate.otp');
 Route::post('/register/verify-otp', [AuthController::class, 'verifyOtp'])->name('verify.otp');
-Route::post('/login/generate-otp', [AuthController::class, 'login'])->name('login.generate.otp');
+Route::post('/login/generate-otp', [AuthController::class, 'loginGenerateOtp'])->name('login.generate.otp');
 Route::post('/login/verify-otp', [AuthController::class, 'verifyLoginOtp'])->name('login.verify.otp');
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.redirect.google');
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('auth.google.callback');
+
 Route::name('user.')->group(function () {
-    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
-    Route::post('/contact-us', [ContactController::class, 'contactSubmit'])->name('contact');
-    Route::prefix('package')->name('package.')->group(function () {
-        Route::get('/search', [UserHomeController::class, 'packageSearch'])->name('search');
-        Route::get('/filter', [UserHomeController::class, 'filterSearch'])->name('filter');
-        Route::get('/{slug}', [UserPackageController::class, 'packageDetail'])->name('show');
+    Route::prefix('packages')->name('packages.')->group(function () {
+        Route::get('/', [UserPackageController::class, 'packages'])->name('index');
+        Route::get('/search', [UserPackageController::class, 'packageSearch'])->name('search');
+        Route::get('/filter', [UserPackageController::class, 'filterSearch'])->name('filter');
         Route::post('/booking', [UserPackageController::class, 'booking'])->name('booking');
         Route::post('/booking-confirmation', [UserPackageController::class, 'bookingConfirmation'])->name('booking_confirmation');
         Route::post('/review', [UserPackageController::class, 'review'])->name('review');
-        Route::post('/wishlist/{packageId}', [UserPackageController::class, 'wishlist'])->name('wishlist');
         Route::post('/get-quote', [UserPackageController::class, 'getQuote'])->name('get_quote');
-        
     });
-
+    Route::middleware('auth')->group(function () {
+        Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+        Route::get('/profile',[ProfileController::class,'profile'])->name('profile');
+        Route::post('/packages/wishlist/{packageId}', [UserPackageController::class, 'wishlist'])->name('packages.wishlist');
+    });
+    Route::get('/{slug}', [UserPackageController::class, 'packageDetail'])->name('packages.show');
 });
+
 Route::prefix('admin')->name('admin.')->group(function () {
     // Admin Authentication
     Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('login');
     Route::post('login', [AdminAuthController::class, 'adminLogin'])->name('login.post');
-  
-
     // Admin Panel Routes (Requires Admin Middleware)
     Route::middleware(['admin'])->group(function () {
         Route::post('logout', [AdminAuthController::class, 'logout'])->name('logout');

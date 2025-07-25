@@ -4,6 +4,8 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Mail\OtpMail;
+use App\Models\Footer;
+use App\Models\MainSeo;
 use App\Models\User;
 use App\Models\UserOtp;
 use Carbon\Carbon;
@@ -15,6 +17,16 @@ use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
+    public function login(){
+        $currentPath = request()->path();
+        $seo = MainSeo::where('page_url', $currentPath)->first()
+        ?? MainSeo::where('page_url', 'default')->first();  
+        $follow_us = Footer::where('type','Follow On Us')->get();
+        $partners = Footer::where('type','Payment Partners')->get();
+        $links = Footer::where('type','Quick Links')->get();
+        return view('users.login')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'seo'=>$seo]);
+    }
+  
     public function generateOtp(Request $request){
         $request->validate([
             'name' => 'required|string|max:255',
@@ -85,7 +97,7 @@ class AuthController extends Controller
      
         return redirect('/login');
     }
-    public function login(Request $request)
+    public function loginGenerateOtp(Request $request)
     {
         $request->validate([
             'email' => 'required|email|exists:users,email',
@@ -135,5 +147,31 @@ class AuthController extends Controller
         $redirectUrl = $request->input('redirect', route('home.index'));
         return redirect()->to($redirectUrl);
     }
-   
+      public function preview(){
+        $currentPath = request()->path();
+        $seo = MainSeo::where('page_url', $currentPath)->first()
+        ?? MainSeo::where('page_url', 'default')->first();  
+        $follow_us = Footer::where('type','Follow On Us')->get();
+        $partners = Footer::where('type','Payment Partners')->get();
+        $links = Footer::where('type','Quick Links')->get();
+        $user = Auth::user();
+        return view('users.preview')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'seo'=>$seo,'user'=>$user]);
+    }
+    public function previewSubmit(Request $request)
+    {
+        $request->validate([
+           'phone' => 'required',
+           'agree_terms' => 'nullable|boolean',
+
+        ]);
+        $data = $request->all();
+        $user = User::where('id', $data['user_id'])->first(); 
+        $user->update([
+            'phone' => $data['phone'],
+            'marketing' => $data['marketing'] ?? 0,
+            'agree_terms'=>$data['agree_terms'] ?? 0,
+        ]);
+        Auth::login($user);
+        return redirect()->route('home.index');
+    }
 }

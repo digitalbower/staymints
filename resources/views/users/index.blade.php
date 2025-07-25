@@ -628,7 +628,7 @@ input[type="email"] {
                             </div> --}}
 
                             <div class="tab-pane show active" id="packages" role="tabpanel">
-                                <form class="p-0" id="searchPackage" method="GET" action="{{route('user.package.search')}}">
+                                <form class="p-0" id="searchPackage" method="GET" action="{{route('user.packages.search')}}">
                                     <input type="hidden" name="country_id" id="countryInput">
 
                                     <div class="filter-area">
@@ -928,7 +928,7 @@ input[type="email"] {
                                                 <p>
                                                    {{$category->category_description}}
                                                 </p>
-                                                <a href="{{ route('home.packages') }}?category_id={{ $category->id }}" class="see-btn">
+                                                <a href="{{ route('user.packages.index') }}?category_id={{ $category->id }}" class="see-btn">
                                                     See the Deals
                                                 </a>
                                             </div>
@@ -1019,7 +1019,7 @@ input[type="email"] {
                             data-wow-duration="1500ms">
                             <div class="package-card">
                                 <div class="package-card-img-wrap">
-                                    <a href="{{route('user.package.show',$package->slug)}}" class="card-img"><img
+                                    <a href="{{route('user.packages.show',$package->slug)}}" class="card-img"><img
                                             src="{{ asset('storage/' . $package->image) }}" alt="" /></a>
                                     <div class="batch">
                                         <span class="featured">{{$package->tag?->tag_name}}</span>
@@ -1074,7 +1074,7 @@ input[type="email"] {
                                             <h6>Start From</h6>
                                             <h5>AED {{ number_format($package->starting_price , 2)}}<span>/ {{$package->type?->type_name}}</span></h5>
                                         </div>
-                                        <a href="{{route('user.package.show',$package->slug)}}" class="primary-btn small-primary">Book now</a>
+                                        <a href="{{route('user.packages.show',$package->slug)}}" class="primary-btn small-primary">Book now</a>
                                     </div>
                                 </div>
                             </div>
@@ -1084,7 +1084,7 @@ input[type="email"] {
                 <div class="row pb-80">
                     <div class="col-lg-12 d-flex align-items-center justify-content-center wow animate fadeInUp"
                         data-wow-delay="200ms" data-wow-duration="1500ms">
-                        <a href="{{route('home.packages')}}" class="primary-btn transparent">See All Packages</a>
+                        <a href="{{route('user.packages.index')}}" class="primary-btn transparent">See All Packages</a>
                     </div>
                 </div>
             </div>

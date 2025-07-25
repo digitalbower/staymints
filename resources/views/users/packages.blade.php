@@ -7,7 +7,7 @@
                 <a href="javascript:void(0);" class="mob_filter d-block d-lg-none">Filter <i class="fa-solid fa-filter ms-3"></i></a>
                 <div class="sidebar-area">
                     <a href="javascript:void(0);" class="close_mob_filter d-block d-lg-none"><i class="fa-regular fa-circle-xmark"></i></a>
-                    <form id="filterForm" method="GET" action="{{ route('user.package.filter') }}">
+                    <form id="filterForm" method="GET" action="{{ route('user.packages.filter') }}">
                         <div class="single-widget mb-30">
                             <h5 class="widget-title">Price Filter</h5>
                             <div class="range-wrap">
@@ -386,7 +386,7 @@
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-        <form action="{{route('user.package.get_quote')}}" id="getQuoteForm" method="post">
+        <form action="{{route('user.packages.get_quote')}}" id="getQuoteForm" method="post">
             @csrf
             <div class="modal-body p-4">
             @if (session('success'))

@@ -697,7 +697,7 @@ function numberToWord($number) {
                             <div class="swiper-slide">
                                 <div class="package-card">
                                     <div class="package-card-img-wrap">
-                                        <a href="{{route('user.package.show',$pack->slug)}}" class="card-img"><img
+                                        <a href="{{route('user.packages.show',$pack->slug)}}" class="card-img"><img
                                                 src="{{ asset('storage/' . $pack->image) }}" alt=""></a>
                                        <div class="batch"><span class="featured">{{$pack->tag?->tag_name}}</span>
                                         </div>
@@ -743,7 +743,7 @@ function numberToWord($number) {
                                                 </li>
                                             </ul>
                                             <h5>
-                                                <a href="{{route('user.package.show',$pack->slug)}}">{{$pack->package_name}}</a>
+                                                <a href="{{route('user.packages.show',$pack->slug)}}">{{$pack->package_name}}</a>
                                             </h5>
                                         </div>
                                         <div class="card-content-bottom">
@@ -751,7 +751,7 @@ function numberToWord($number) {
                                                 <h6>Start From</h6>
                                                 <h5>AED {{ number_format($pack->starting_price , 2)}}<span>/ {{$pack->type?->type_name}}</span></h5>
                                             </div>
-                                            <a href="{{route('user.package.show',$pack->slug)}}" class="primary-btn small">Book now </a>
+                                            <a href="{{route('user.packages.show',$pack->slug)}}" class="primary-btn small">Book now </a>
                                         </div>
                                     </div>
                                 </div>
@@ -1046,7 +1046,7 @@ function numberToWord($number) {
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-        <form action="{{route('user.package.get_quote')}}" id="getQuoteForm" method="post">
+        <form action="{{route('user.packages.get_quote')}}" id="getQuoteForm" method="post">
             @csrf
             <div class="modal-body p-4">
             @if (session('success'))
