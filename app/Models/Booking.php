@@ -13,12 +13,10 @@ class Booking extends Model
             'email',
             'phone',
             'package_id',
-            'booking_month',
-            'booking_year',
-            'adults_quantity',
-            'children_quantity',
-            'infants_quantity',
-            'services',
-            'starting_price',
+            'agree_terms',
+            'requirements'
+    ];
+    protected $casts = [
+        'requirements' => 'array',
     ];
 }

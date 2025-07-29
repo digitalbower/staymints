@@ -13,6 +13,7 @@ use App\Models\Package;
 use App\Models\Rating;
 use App\Models\Review;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PackageController extends Controller
 {
@@ -391,25 +392,51 @@ class PackageController extends Controller
         'reviewCount' => $reviewCount,'percentages' => $percentages,'averagePerCategory' => $averagePerCategory,
         'reviewsWithAverages'=>$reviewsWithAverages,'packages'=>$packages,'seo'=>$seo]);
     }
-    public function booking(Request $request) {  
+    public function booking(Request $request){  
         $validated = $request->validate([
             'booking_month' => 'required',
             'booking_year' => 'required',
             'adults_quantity' => 'required',
             'starting_price' => 'required',
-            'services' => 'required|array',
         ]); 
-        $data = $request->all();
-        $data['services'] = json_encode($request->services);
+        $requirements = [
+            'requirement_type' => 'booking_details',
+            'booking_month' => $request->booking_month,
+            'booking_year' => $request->booking_year,
+            'adults_quantity' => $request->adults_quantity,
+            'children_quantity' =>$request->children_quantity,
+            'infants_quantity' =>$request->infants_quantity,
+            'services' => json_encode($request->services),
+            'starting_price' => $request->starting_price,
+        ];
+        if (Auth::check()) {
+            $fullName = Auth::user()->name;
+            $parts = explode(' ', $fullName, 2);
+
+            $requirements['user_id'] = Auth::id();
+            $requirements['first_name'] = $parts[0];
+            $requirements['last_name'] = $parts[1] ?? null;
+            $requirements['email'] = Auth::user()->email; 
+            $requirements['phone'] = Auth::user()->phone; 
+        } else {
+            $requirements['user_id'] = null;
+            $requirements['first_name'] = null;
+            $requirements['last_name'] = null;
+            $requirements['email'] = null; 
+            $requirements['phone'] = null; 
+        }
 
 
-        $booking = Booking::create($data);
+        $booking = Booking::create([
+            'requirements' => $requirements
+        ]);
+
+        $requirements['id'] = $booking->id;
 
         return response()->json([
-        'message' => 'Booking successful',
-        'data' => $booking
-    ]);
-
+            'message' => 'Booking successful',
+            'data' => $requirements
+        ]);
     }
     public function bookingConfirmation(Request $request) { 
         $request->validate([
@@ -419,12 +446,12 @@ class PackageController extends Controller
             'phone' => 'required',
         ]); 
         $data = $request->all();
-
+        $data['user_id'] = Auth::check() ? Auth::id() : null;
         $booking = Booking::find($data['id']);
         $booking->update($data);
 
         return response()->json([
-        'message' => 'Booking successful',
+        'message' => 'Our holiday expert will get in touch with you.',
         ]);
     
     }
@@ -466,9 +493,16 @@ class PackageController extends Controller
             'email' => 'required|email',
             'phone' => 'required',
             'agree_terms' => 'required',
+            'requirements' => 'required'
         ]);
         $data = $request->all(); 
-        GetQuote::create($data); 
+        $data['user_id'] = Auth::check() ? Auth::id() : null;
+        $data['requirements' ]= [
+                'requirement_type' => 'note',
+                'requirements' => $request->requirements
+        ];
+        
+        Booking::create($data);
         return redirect()->back()->with('success', 'Our holiday expert will get in touch with you.');
     }
 }

@@ -6,7 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class PermissionAdminSeeder extends Seeder
+class PermissionRoleSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,15 +15,15 @@ class PermissionAdminSeeder extends Seeder
     {
         $now = now();
 
-        $adminPermissions = array_map(function ($id) use ($now) {
+        $rolePermissions = array_map(function ($id) use ($now) {
             return [
                 'permission_id' => $id,
-                'admin_id' => 1,
+                'role_id' => 1,
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
         }, range(1, 24));
 
-        DB::table('permission_admins')->insert($adminPermissions);
+        DB::table('permission_roles')->insert($rolePermissions);
     }
 }

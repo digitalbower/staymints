@@ -30,19 +30,14 @@ class Admin extends Authenticatable
     {
         return $this->belongsTo(Role::class, 'user_role_id');
     }
-    public function permissions()
-    {
-        return $this->belongsToMany(Permission::class, 'permission_admins');
-    }
-
     public function hasPermission($permissionName)
     {
-        return $this->permissions()->where('name', $permissionName)->exists()
-            || $this->role && $this->role->permissions()->where('name', $permissionName)->exists();
+        return $this->role 
+            && $this->role->permissions->contains('name', $permissionName);
     }
-    public function permissionAdmins()
+    public function permissionRoles()
     {
-        return $this->hasMany(PermissionAdmin::class, 'admin_id');
+        return $this->hasMany(PermissionRole::class, 'role_id');
     }
 
     protected static function booted()
@@ -50,7 +45,7 @@ class Admin extends Authenticatable
         static::deleting(function ($admin) {
             if (!$admin->isForceDeleting()) {
                 // Soft delete permission admins
-                $admin->permissionAdmins()->delete();
+                $admin->permissionRoles()->delete();
             }
         });
     }

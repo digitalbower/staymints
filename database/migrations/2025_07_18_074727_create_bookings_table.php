@@ -21,13 +21,8 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->unsignedBigInteger('package_id')->nullable();
             $table->foreign('package_id')->references('id')->on('packages')->onDelete('cascade');
-            $table->string('booking_month')->nullable();
-            $table->string('booking_year')->nullable();
-            $table->integer('adults_quantity')->nullable();
-            $table->integer('children_quantity')->nullable();
-            $table->integer('infants_quantity')->nullable();
-            $table->json('services')->nullable();
-            $table->integer('starting_price')->nullable();
+            $table->tinyInteger('agree_terms')->default(1);
+            $table->json('requirements')->nullable();
             $table->timestamps();
         });
     }
@@ -37,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('booking_infos');
+        Schema::dropIfExists('bookings');
     }
 };

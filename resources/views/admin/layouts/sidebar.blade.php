@@ -86,6 +86,20 @@
         </li>
         @endif
         @endif
+        @if(auth()->guard('admin')->user()->hasPermission('view_active_leads'))
+        <li class="pc-item pc-caption">
+          <label>Leads</label>
+          <i data-feather="sidebar"></i>
+        </li>
+        @if(auth()->guard('admin')->user()->hasPermission('view_active_leads'))
+        <li class="pc-item pc-hasmenu">
+          <a href="{{route('admin.sales.leads')}}" class="pc-link">
+            <span class="pc-micon"> <i data-feather="feather"></i></span>
+            <span class="pc-mtext">Active Leads</span>
+          </a>
+        </li>
+        @endif
+        @endif
       </ul>
     </div>
   </div>

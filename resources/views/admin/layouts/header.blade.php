@@ -1,4 +1,4 @@
-<header class="pc-header">
+ <header class="pc-header">
   <div class="header-wrapper flex max-sm:px-[15px] px-[25px] grow"><!-- [Mobile Media Block] start -->
 <div class="me-auto pc-mob-drp">
   <ul class="inline-flex *:min-h-header-height *:inline-flex *:items-center">
@@ -31,7 +31,13 @@
   <ul class="inline-flex *:min-h-header-height *:inline-flex *:items-center">
     <li class="dropdown pc-h-item">
       <div class="dropdown-menu dropdown-menu-end pc-h-dropdown">
-        <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" class="d-none">
+        @php
+            $logoutRoute = route('admin.logout'); // default
+            if (auth('admin')->check() && auth('admin')->user()->user_role_id === 4) {
+                $logoutRoute = route('admin.logout.sales');
+            }
+        @endphp 
+        <form id="logout-form" action="{{ $logoutRoute }}" method="POST" class="d-none">
         @csrf
         </form>
         <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -56,9 +62,14 @@
         </div>
         <div class="dropdown-body py-4 px-5">
           <div class="profile-notification-scroll position-relative" style="max-height: calc(100vh - 225px)">
-
+              @php
+                $logoutRoute = route('admin.logout'); // default
+                if (auth('admin')->check() && auth('admin')->user()->user_role_id === 4) {
+                    $logoutRoute = route('admin.logout.sales');
+                }
+              @endphp 
             <div class="grid my-3">
-              <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" class="d-none">
+              <form id="logout-form" action="{{ $logoutRoute }}" method="POST" class="d-none">
               @csrf
               </form>
               <button class="btn btn-primary flex items-center justify-center" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

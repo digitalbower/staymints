@@ -1014,17 +1014,15 @@ function numberToWord($number) {
 
             
                     <input type="hidden" id="id" name="id">
-                    <input type="text" name="first_name" id="first_name" placeholder="First Name"
-                        value="{{ Auth::check() ? Auth::user()->first_name : '' }}">
+                    <input type="hidden" id="user_id" name="user_id">
+                    <input type="hidden" id="package_id" name="package_id" value="{{$package->id}}">
+                    <input type="text" name="first_name" id="first_name" placeholder="First Name">
 
-                    <input type="text" name="last_name" id="last_name" placeholder="Last Name"
-                        value="{{ Auth::check() ? Auth::user()->last_name : '' }}">
+                    <input type="text" name="last_name" id="last_name" placeholder="Last Name">
 
-                    <input type="email" name="email" id="email" placeholder="Email"
-                        value="{{ Auth::check() ? Auth::user()->email : '' }}">
+                    <input type="email" name="email" id="email" placeholder="Email">
 
-                    <input type="tel" name="phone" id="phone" placeholder="Phone Number"
-                        value="{{ Auth::check() ? Auth::user()->phone : '' }}">
+                    <input type="tel" name="phone" id="phone" placeholder="Phone Number">
 
                 
             </div>
@@ -1054,6 +1052,7 @@ function numberToWord($number) {
                     {{ session('success') }}
                 </div>
             @endif
+                <input type="hidden" name="package_id" value="{{$package->id}}">
                 <div class="row">
                     <div class="col-md-6 mt-4">
                         <div class="form-group">
@@ -1093,9 +1092,9 @@ function numberToWord($number) {
                     </div>
                     <div class="col-md-12 mt-4">
                         <div class="form-group">
-                            <label for="requirments">Requirments</label>
-                            <textarea name="requirments" class="form-control" >{{old('requirments')}}</textarea>
-                            @error('requirments')
+                            <label for="requirements">Requirements</label>
+                            <textarea name="requirements" class="form-control" >{{old('requirements')}}</textarea>
+                            @error('requirements')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
@@ -1223,7 +1222,7 @@ $('#bookingForm').on('submit', function (e) {
     let formData = new FormData(this);
 
     $.ajax({
-        url: '/package/booking',
+        url: '/packages/booking',
         method: 'POST',
         data: formData,
         processData: false,
@@ -1240,6 +1239,12 @@ $('#bookingForm').on('submit', function (e) {
                 $('#modalInfantQty').text(response.data.infants_quantity);
                 $('#modalPrice').text(response.data.starting_price);
                 $("#id").val(response.data.id);
+                $("#first_name").val(response.data.first_name);
+                $("#last_name").val(response.data.last_name);
+                $("#user_id").val(response.data.user_id);
+                $("#email").val(response.data.email);
+                $("#phone").val(response.data.phone);
+
                 
                 let services = JSON.parse(response.data.services || '[]');
                 $('#modalService').text(services.join(', '));
@@ -1273,7 +1278,7 @@ $(document).ready(function () {
         let formData = new FormData(this);
 
         $.ajax({
-            url: '/package/booking-confirmation', 
+            url: '/packages/booking-confirmation', 
             method: 'POST',
             data: formData,
             processData: false,
@@ -1385,7 +1390,7 @@ $(document).ready(function () {
     };
 
     $.ajax({
-        url: '/package/review', 
+        url: '/packages/review', 
         type: 'POST',
         contentType: 'application/json',
         headers: {
@@ -1442,7 +1447,7 @@ $(document).ready(function () {
         var token = $('meta[name="csrf-token"]').attr('content');
 
         $.ajax({
-            url: '/package/wishlist/' + packageId,
+            url: '/packages/wishlist/' + packageId,
             type: 'POST',
             headers: {
                 'X-CSRF-TOKEN': token
@@ -1507,7 +1512,7 @@ function copyToClipboard(text) {
             agree_terms: {
                 required: true
             },
-            requirments: {
+            requirements: {
                 required:true
             }
         },
@@ -1520,7 +1525,7 @@ function copyToClipboard(text) {
             },
             email: "Please enter a valid email address",
             agree_terms: "You must accept the terms and conditions",
-            requirments: "Please enter your requirments"
+            requirements: "Please enter your requirements"
         },
         errorElement: 'div',
         errorClass: 'text-danger'

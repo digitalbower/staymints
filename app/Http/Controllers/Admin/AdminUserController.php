@@ -52,7 +52,10 @@ class AdminUserController extends Controller
         $data['password'] = Hash::make($request->password); 
         $admin = Admin::create($data); 
         if ($request->has('permissions')) {
-            $admin->permissions()->sync($request->permissions);
+            $role = Role::find($admin->user_role_id);
+            if ($role) {
+                $role->permissions()->sync($request->permissions);
+            }
         }
         return redirect()->route('admin.users.index')->with('success', 'New Admin User created successfully!');
     }
@@ -97,12 +100,15 @@ class AdminUserController extends Controller
             unset($data['password']);
         }
         $user->update($data); 
+        $role = Role::find($user->user_role_id);
         if ($request->has('permissions')) {
-            $user->permissions()->sync($request->permissions);
-        } else {
-            $user->permissions()->sync([]);
+            if ($role) {
+                $role->permissions()->sync($request->permissions);
+            }
         }
-       
+        else {
+            $role->permissions()->sync([]);
+        }
         return redirect()->route('admin.users.index')->with('success', ' Admin User updated successfully!');
     }
 

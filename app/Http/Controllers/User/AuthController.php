@@ -42,6 +42,7 @@ class AuthController extends Controller
         Session::put('register_temp', [
             'name' => $data['name'],
             'email' => $data['email'],
+            'phone' => $data['phone'],
             'otp' => $data['otp'],
             'expires_at' => $data['expires_at'],
             'marketing' => $data['marketing'] ?? 0,
@@ -77,6 +78,7 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $temp['name'],
             'email' => $temp['email'],
+            'phone' => $temp['phone'],
             'otp' => $temp['otp'],
             'marketing' => $temp['marketing'] ?? 0,
             'agree_terms'=>$temp['agree_terms'] ?? 0,

@@ -48,8 +48,16 @@ class AdminAuthController extends Controller
                 ]
             );
            
-            return redirect()->intended('/admin');
-            
+            $admin = Auth::guard('admin')->user();
+            if ($admin->user_role_id === 1 || $admin->user_role_id === 2) { 
+                return redirect()->route('admin.index');
+            } elseif ($admin->user_role_id === 4) {
+                return redirect()->route('admin.sales.leads');
+            }
+                        
+            // Fallback for unexpected roles
+            Auth::guard('admin')->logout();
+            return redirect()->route('admin.login')->withErrors(['role' => 'Unauthorized role']);
         }
 
         $admin = Admin::where('email', $request->email)->first();
@@ -67,7 +75,7 @@ class AdminAuthController extends Controller
      
         $request->session()->regenerateToken();
      
-        return redirect('/admin');
+        return redirect('/admin/login');
     }
 
 }

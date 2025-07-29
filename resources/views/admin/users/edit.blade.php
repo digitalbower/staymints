@@ -64,6 +64,9 @@
                 <label class="form-label">Assign Permissions</label>
                 <div class="permissions-wrapper">
                 <div class="row">
+                    @php
+                        $selectedPermissions = old('permissions', optional($user->role)->permissions ? $user->role->permissions->pluck('id')->toArray() : []);
+                    @endphp
                     @foreach($permissions as $permission)
                         <div class="col-md-4">
                             <div class="form-check">
@@ -72,7 +75,7 @@
                                     name="permissions[]"
                                     value="{{ $permission->id }}"
                                     id="permission_{{ $permission->id }}"
-                                    {{ (in_array($permission->id, old('permissions', $user->permissions->pluck('id')->toArray()))) ? 'checked' : '' }}>
+                                        {{ in_array($permission->id, $selectedPermissions) ? 'checked' : '' }}>
                                 <label class="form-check-label" for="permission_{{ $permission->id }}">
                                     {{ ucfirst(str_replace('_', ' ', $permission->name)) }}
                                 </label>

@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\FooterController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Admin\ReviewController;
+use App\Http\Controllers\Admin\SalesPersonController;
 use App\Http\Controllers\Admin\SeoManagementController;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\Auth\GoogleController;
@@ -60,8 +61,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('login', [AdminAuthController::class, 'adminLogin'])->name('login.post');
     // Admin Panel Routes (Requires Admin Middleware)
     Route::middleware(['admin'])->group(function () {
-        Route::post('logout', [AdminAuthController::class, 'logout'])->name('logout');
-        Route::get('/', [HomeController::class, 'index'])->name('index');
+        Route::get('/home', [HomeController::class, 'index'])->name('index');
         Route::resource('users', AdminUserController::class);
         Route::resource('footers', FooterController::class);
         Route::resource('packages', PackageController::class);
@@ -72,5 +72,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('reviews', [ReviewController::class, 'index'])->name('reviews.index');
         Route::post('delete-review/{id}', [ReviewController::class, 'deleteReview'])->name('reviews.delete');
         Route::post('admin-reply', [ReviewController::class, 'adminReply'])->name('reviews.reply');
+        Route::post('logout', [AdminAuthController::class, 'logout'])->name('logout');
+    });
+    Route::middleware(['sales'])->group(function () {
+        Route::get('/sales/leads', [SalesPersonController::class, 'getActiveLeads'])->name('sales.leads');
+        Route::get('/sales/assign', [SalesPersonController::class, 'assignSalesPerson'])->name('sales.assign');
+        Route::post('/sales/logout', [AdminAuthController::class, 'logout'])->name('logout.sales');
     });
 });
+
+

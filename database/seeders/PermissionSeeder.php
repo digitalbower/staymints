@@ -38,6 +38,8 @@ class PermissionSeeder extends Seeder
             'view_reviews',
             'reply_review',
             'delete_review',
+            'view_active_leads',
+            'assign_sales_person'
         ];
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);
