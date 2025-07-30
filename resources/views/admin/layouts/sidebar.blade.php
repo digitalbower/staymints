@@ -9,7 +9,7 @@
     </div>
     <div class="navbar-content h-[calc(100vh_-_74px)] py-2.5">
       <ul class="pc-navbar">
-        @if(auth()->guard('admin')->user()->hasPermission('admin_dashboard'))
+        @if(auth()->guard('admin ')->user()->hasPermission('admin_dashboard'))
         <li class="pc-item pc-caption">
           <label>Navigation</label>
         </li>
