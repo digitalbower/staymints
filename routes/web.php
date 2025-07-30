@@ -76,7 +76,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
     Route::middleware(['sales'])->group(function () {
         Route::get('/sales/leads', [SalesPersonController::class, 'getActiveLeads'])->name('sales.leads');
-        Route::get('/sales/assign', [SalesPersonController::class, 'assignSalesPerson'])->name('sales.assign');
+        Route::post('/sales/assign', [SalesPersonController::class, 'assignSalesPerson'])->name('sales.assign');
+        Route::get('/sales/working-leads', [SalesPersonController::class, 'getWorkingLeads'])->name('sales.working.leads');
+        Route::get('/sales/completed-leads', [SalesPersonController::class, 'getCompletedLeads'])->name('sales.completed.leads');
+        Route::get('/sales/loss-leads', [SalesPersonController::class, 'getLossLeads'])->name('sales.loss.leads');
+        Route::post('/sales/change-working-lead', [SalesPersonController::class, 'changeWorkingLeads'])->name('sales.change.lead');
         Route::post('/sales/logout', [AdminAuthController::class, 'logout'])->name('logout.sales');
     });
 });

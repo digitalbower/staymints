@@ -9,17 +9,19 @@
     </div>
     <div class="navbar-content h-[calc(100vh_-_74px)] py-2.5">
       <ul class="pc-navbar">
+        @if(auth()->guard('admin')->user()->hasPermission('admin_dashboard'))
         <li class="pc-item pc-caption">
           <label>Navigation</label>
         </li>
         <li class="pc-item">
-          <a href="{{route('admin.index')}}" class="pc-link">
+           <a href="{{route('admin.index')}}" class="pc-link">
             <span class="pc-micon">
               <i data-feather="home"></i>
             </span>
             <span class="pc-mtext">Dashboard</span>
           </a>
         </li>
+        @endif
         @if(auth()->guard('admin')->user()->hasPermission('view_footer'))
         <li class="pc-item pc-caption">
           <label>Contents</label>
@@ -86,7 +88,7 @@
         </li>
         @endif
         @endif
-        @if(auth()->guard('admin')->user()->hasPermission('view_active_leads'))
+        @if(auth()->guard('admin')->user()->hasPermission('view_active_leads')|| auth()->guard('admin')->user()->hasPermission('view_working_leads') || auth()->guard('admin')->user()->hasPermission('view_completed_leads') || auth()->guard('admin')->user()->hasPermission('view_loss_leads'))
         <li class="pc-item pc-caption">
           <label>Leads</label>
           <i data-feather="sidebar"></i>
@@ -96,6 +98,30 @@
           <a href="{{route('admin.sales.leads')}}" class="pc-link">
             <span class="pc-micon"> <i data-feather="feather"></i></span>
             <span class="pc-mtext">Active Leads</span>
+          </a>
+        </li>
+        @endif
+          @if(auth()->guard('admin')->user()->hasPermission('view_working_leads'))
+        <li class="pc-item pc-hasmenu">
+          <a href="{{route('admin.sales.working.leads')}}" class="pc-link">
+            <span class="pc-micon"> <i data-feather="feather"></i></span>
+            <span class="pc-mtext">Working Leads</span>
+          </a>
+        </li>
+        @endif
+        @if(auth()->guard('admin')->user()->hasPermission('view_completed_leads'))
+        <li class="pc-item pc-hasmenu">
+          <a href="{{route('admin.sales.completed.leads')}}" class="pc-link">
+            <span class="pc-micon"> <i data-feather="feather"></i></span>
+            <span class="pc-mtext">Completed Leads</span>
+          </a>
+        </li>
+        @endif
+        @if(auth()->guard('admin')->user()->hasPermission('view_loss_leads'))
+        <li class="pc-item pc-hasmenu">
+          <a href="{{route('admin.sales.loss.leads')}}" class="pc-link">
+            <span class="pc-micon"> <i data-feather="feather"></i></span>
+            <span class="pc-mtext">Loss Leads</span>
           </a>
         </li>
         @endif

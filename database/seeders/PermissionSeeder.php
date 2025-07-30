@@ -14,6 +14,7 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
+            'admin_dashboard',
             'view_adminusers',
             'create_adminusers',
             'edit_adminusers',
@@ -39,7 +40,11 @@ class PermissionSeeder extends Seeder
             'reply_review',
             'delete_review',
             'view_active_leads',
-            'assign_sales_person'
+            'assign_sales_person',
+            'view_working_leads',
+            'change_lead_status',
+            'view_completed_leads',
+            'view_loss_leads',
         ];
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);

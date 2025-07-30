@@ -49,11 +49,12 @@ class AdminAuthController extends Controller
             );
            
             $admin = Auth::guard('admin')->user();
-            if ($admin->user_role_id === 1 || $admin->user_role_id === 2) { 
-                return redirect()->route('admin.index');
-            } elseif ($admin->user_role_id === 4) {
+            if ($admin->user_role_id === 4) {
                 return redirect()->route('admin.sales.leads');
             }
+            else { 
+                return redirect()->route('admin.index');
+            } 
                         
             // Fallback for unexpected roles
             Auth::guard('admin')->logout();
