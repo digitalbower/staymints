@@ -7,7 +7,7 @@ use App\Models\Booking;
 use App\Models\Category;
 use App\Models\Country;
 use App\Models\Footer;
-use App\Models\GetQuote;
+use App\Models\Header;
 use App\Models\MainSeo;
 use App\Models\Package;
 use App\Models\Rating;
@@ -24,6 +24,7 @@ class PackageController extends Controller
         $currentPath = request()->path();
         $seo = MainSeo::where('page_url', $currentPath)->first()
         ?? MainSeo::where('page_url', 'default')->first();  
+        $headers = Header::where('status',1)->get();
         $packages = Package::with([
             'country:id,country_name',
             'type:id,type_name',
@@ -108,7 +109,7 @@ class PackageController extends Controller
                 'value' => $start . '-' . $end,
             ];
         }
-        return view('users.packages')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'packages'=>$packages,'countries'=>$countries,'categories'=>$categories,'priceRanges'=>$priceRanges,'ratingCounts' => $ratingCounts,'minPrice'=>$minPrice,'maxPrice'=>$maxPrice,'seo'=>$seo]);
+        return view('users.packages')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'packages'=>$packages,'countries'=>$countries,'categories'=>$categories,'priceRanges'=>$priceRanges,'ratingCounts' => $ratingCounts,'minPrice'=>$minPrice,'maxPrice'=>$maxPrice,'seo'=>$seo,'headers'=>$headers]);
     }
     public function packageSearch(Request $request){  
         $currentPath = request()->path();
@@ -117,6 +118,7 @@ class PackageController extends Controller
         $follow_us = Footer::where('type','Follow On Us')->get();
         $partners = Footer::where('type','Payment Partners')->get();
         $links = Footer::where('type','Quick Links')->get();
+        $headers = Header::where('status',1)->get();
         $query = Package::with(['country','type','tag'])->where('status', 1);
         $countries = Country::where('status', 1)->get();
         $categories = Category::where('status', 1)->get();
@@ -146,7 +148,7 @@ class PackageController extends Controller
         }
 
         $packages = $query->paginate(12);
-        return view('users.packages')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'packages'=>$packages,'countries'=>$countries,'categories'=>$categories,'priceRanges'=>$priceRanges,'minPrice'=>$minPrice,'maxPrice'=>$maxPrice,'seo'=>$seo]);
+        return view('users.packages')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'packages'=>$packages,'countries'=>$countries,'categories'=>$categories,'priceRanges'=>$priceRanges,'minPrice'=>$minPrice,'maxPrice'=>$maxPrice,'seo'=>$seo,'headers'=>$headers]);
     }
     public function filterSearch(Request $request)
     { 
@@ -290,7 +292,7 @@ class PackageController extends Controller
         // Get min and max starting price
         $minPrice = Package::min('starting_price');
         $maxPrice = Package::max('starting_price');
-
+        $headers = Header::where('status',1)->get();
         // Number of ranges you want
         $steps = 5;
 
@@ -312,7 +314,7 @@ class PackageController extends Controller
         if ($request->ajax()) {
             return view('users.partials.package_list', compact('packages'))->render();
         }
-        return view('users.packages', compact('packages', 'countries', 'categories', 'follow_us', 'partners', 'links','priceRanges','ratingCounts','minPrice','maxPrice','seo'));
+        return view('users.packages', compact('packages', 'countries', 'categories', 'follow_us', 'partners', 'links','priceRanges','ratingCounts','minPrice','maxPrice','seo','headers'));
     }
     public function packageDetail($slug){
         $follow_us = Footer::where('type','Follow On Us')->get();
@@ -322,6 +324,7 @@ class PackageController extends Controller
         $slug = str_replace('package/', '', $currentPath);
         $slug = trim($slug, '/');
         $seo = Package::where('slug', $slug)->first();
+        $headers = Header::where('status',1)->get();
         $package = Package::where('slug', $slug)->firstOrFail();
         $packages = Package::with('reviews.rating')
             ->where('recommendation', 1)
@@ -390,7 +393,7 @@ class PackageController extends Controller
         'exclude_infos'=>$exclude_infos,'slideShow'=>$slideShow,'itineraries'=>$itineraries,
         'coverImage'=>$coverImage,'services'=>$services,'averageRating' => $averageRating,
         'reviewCount' => $reviewCount,'percentages' => $percentages,'averagePerCategory' => $averagePerCategory,
-        'reviewsWithAverages'=>$reviewsWithAverages,'packages'=>$packages,'seo'=>$seo]);
+        'reviewsWithAverages'=>$reviewsWithAverages,'packages'=>$packages,'seo'=>$seo,'headers'=>$headers]);
     }
     public function booking(Request $request){  
         $validated = $request->validate([

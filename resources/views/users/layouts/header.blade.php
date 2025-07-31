@@ -20,10 +20,17 @@
             </div>
             @endauth
             <ul class="menu-list">
-                <li class="menu-item-has-children active"><a href="{{route('home.index')}}" class="drop-down">Home</a></li>
-                <li><a href="{{route('home.about')}}" class="drop-down">About</a></li>
-                <li><a href="{{route('user.packages.index')}}" class="drop-down">Packages</a></li>
-                <li><a href="{{route('home.contact')}}" class="drop-down">Contact</a></li>
+                @foreach ($headers as $header)
+                    @if ($loop->first)
+                        <li class="menu-item-has-children active">
+                            <a href="{{ url($header->link) }}" class="drop-down">{{$header->name}}</a>
+                        </li>
+                    @else
+                        <li>
+                            <a href="{{url($header->link)}}" class="drop-down">{{$header->name}}</a>
+                        </li>
+                    @endif
+                @endforeach
             </ul>
         </div>
         <div class="nav-right d-flex jsutify-content-end align-items-center">

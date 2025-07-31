@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\Auth\AdminAuthController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\FooterController;
+use App\Http\Controllers\Admin\HeaderManagementController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Admin\ReviewController;
@@ -64,6 +65,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/home', [HomeController::class, 'index'])->name('index');
         Route::resource('users', AdminUserController::class);
         Route::resource('footers', FooterController::class);
+        Route::resource('headers', HeaderManagementController::class);
         Route::resource('packages', PackageController::class);
         Route::post('/packages/change-status', [PackageController::class, 'changeStatus'])->name('packages.status');
         Route::resource('seo', SeoManagementController::class);

@@ -22,7 +22,7 @@ class PermissionRoleSeeder extends Seeder
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
-        }, range(1, 25));
+        }, range(1, 29));
 
         DB::table('permission_roles')->insert($rolePermissions);
     }

@@ -49,12 +49,12 @@
                     <div class="form-group mt-4">
                         <label for="">OTP</label>                        
                         <div class="d-flex align-items-center mt-1">
-                            <input type="text" maxlength="1" name="otp[]" class="form-control text-center p-2">
-                            <input type="text" maxlength="1" name="otp[]" class="form-control text-center p-2 ms-2">
-                            <input type="text" maxlength="1" name="otp[]" class="form-control text-center p-2 ms-2">
-                            <input type="text" maxlength="1" name="otp[]" class="form-control text-center p-2 ms-2">
-                            <input type="text" maxlength="1" name="otp[]" class="form-control text-center p-2 ms-2">
-                            <input type="text" maxlength="1" name="otp[]" class="form-control text-center p-2 ms-2">
+                            <input type="password" maxlength="1" name="otp[]" class="form-control text-center p-2">
+                            <input type="password" maxlength="1" name="otp[]" class="form-control text-center p-2 ms-2">
+                            <input type="password" maxlength="1" name="otp[]" class="form-control text-center p-2 ms-2">
+                            <input type="password" maxlength="1" name="otp[]" class="form-control text-center p-2 ms-2">
+                            <input type="password" maxlength="1" name="otp[]" class="form-control text-center p-2 ms-2">
+                            <input type="password" maxlength="1" name="otp[]" class="form-control text-center p-2 ms-2">
                         </div>
                          <input type="hidden" id="login_otp_full" name="otp">
                         @error('otp')
@@ -128,12 +128,12 @@
                     <div class="form-group mt-4">
                         <label for="">OTP</label>                        
                         <div class="d-flex align-items-center mt-1">
-                            <input type="text" maxlength="1" name="otp[]" class="form-control text-center p-2">
-                            <input type="text" maxlength="1" name="otp[]" class="form-control text-center p-2 ms-2">
-                            <input type="text" maxlength="1" name="otp[]" class="form-control text-center p-2 ms-2">
-                            <input type="text" maxlength="1" name="otp[]" class="form-control text-center p-2 ms-2">
-                            <input type="text" maxlength="1" name="otp[]" class="form-control text-center p-2 ms-2">
-                            <input type="text" maxlength="1" name="otp[]" class="form-control text-center p-2 ms-2">
+                            <input type="password" maxlength="1" name="otp[]" class="form-control text-center p-2">
+                            <input type="password" maxlength="1" name="otp[]" class="form-control text-center p-2 ms-2">
+                            <input type="password" maxlength="1" name="otp[]" class="form-control text-center p-2 ms-2">
+                            <input type="password" maxlength="1" name="otp[]" class="form-control text-center p-2 ms-2">
+                            <input type="password" maxlength="1" name="otp[]" class="form-control text-center p-2 ms-2">
+                            <input type="password" maxlength="1" name="otp[]" class="form-control text-center p-2 ms-2">
                         </div>
                         <input type="hidden" id="otp_full" name="otp">
                          @error('otp')

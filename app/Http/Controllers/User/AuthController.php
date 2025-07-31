@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Mail\OtpMail;
 use App\Models\Footer;
+use App\Models\Header;
 use App\Models\MainSeo;
 use App\Models\User;
 use App\Models\UserOtp;
@@ -24,7 +25,8 @@ class AuthController extends Controller
         $follow_us = Footer::where('type','Follow On Us')->get();
         $partners = Footer::where('type','Payment Partners')->get();
         $links = Footer::where('type','Quick Links')->get();
-        return view('users.login')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'seo'=>$seo]);
+        $headers = Header::where('status',1)->get();
+        return view('users.login')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'seo'=>$seo,'headers'=>$headers]);
     }
   
     public function generateOtp(Request $request){
@@ -156,8 +158,9 @@ class AuthController extends Controller
         $follow_us = Footer::where('type','Follow On Us')->get();
         $partners = Footer::where('type','Payment Partners')->get();
         $links = Footer::where('type','Quick Links')->get();
+        $headers = Header::where('status',1)->get();
         $user = Auth::user();
-        return view('users.preview')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'seo'=>$seo,'user'=>$user]);
+        return view('users.preview')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'seo'=>$seo,'user'=>$user,'headers'=>$headers]);
     }
     public function previewSubmit(Request $request)
     {

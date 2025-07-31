@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Footer;
+use App\Models\Header;
 use App\Models\MainSeo;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -17,6 +18,7 @@ class ProfileController extends Controller
         $follow_us = Footer::where('type','Follow On Us')->get();
         $partners = Footer::where('type','Payment Partners')->get();
         $links = Footer::where('type','Quick Links')->get();
+        $headers = Header::where('status',1)->get();
         /** @var User $user */
         $user = Auth::user();
         $wishlistedPackages = $user->wishlists()->with('reviews.rating')->get()->transform(function ($package) {
@@ -36,6 +38,6 @@ class ProfileController extends Controller
         return $package;
     });
 
-    return view('users.profile')->with(['seo'=>$seo,'follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'user'=>$user,'packages'=>$wishlistedPackages]);
+    return view('users.profile')->with(['seo'=>$seo,'follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'user'=>$user,'packages'=>$wishlistedPackages,'headers'=>$headers]);
     }
 }

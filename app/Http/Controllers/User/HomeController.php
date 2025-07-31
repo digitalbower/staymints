@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Country;
 use App\Models\Footer;
+use App\Models\Header;
 use App\Models\MainSeo;
 use App\Models\Package;
 
@@ -47,7 +48,8 @@ class HomeController extends Controller
         $follow_us = Footer::where('type','Follow On Us')->get();
         $partners = Footer::where('type','Payment Partners')->get();
         $links = Footer::where('type','Quick Links')->get();
-        return view('users.index')->with(['categories'=>$categories,'packages'=>$packages,'follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'countries'=>$countries,'seo'=>$seo]);
+        $headers = Header::where('status',1)->get();
+        return view('users.index')->with(['categories'=>$categories,'packages'=>$packages,'follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'countries'=>$countries,'seo'=>$seo,'headers'=>$headers]);
     }
     public function about(){
         $currentPath = request()->path();
@@ -56,6 +58,7 @@ class HomeController extends Controller
          $follow_us = Footer::where('type','Follow On Us')->get();
         $partners = Footer::where('type','Payment Partners')->get();
         $links = Footer::where('type','Quick Links')->get();
-        return view('users.about')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'seo'=>$seo]);
+        $headers = Header::where('status',1)->get();
+        return view('users.about')->with(['follow_us'=>$follow_us,'partners'=>$partners,'links'=>$links,'seo'=>$seo,'headers'=>$headers]);
     }
 }

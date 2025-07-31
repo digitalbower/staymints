@@ -9,7 +9,7 @@
     </div>
     <div class="navbar-content h-[calc(100vh_-_74px)] py-2.5">
       <ul class="pc-navbar">
-        @if(auth()->guard('admin ')->user()->hasPermission('admin_dashboard'))
+        @if(auth()->guard('admin')->user()->hasPermission('admin_dashboard'))
         <li class="pc-item pc-caption">
           <label>Navigation</label>
         </li>
@@ -22,7 +22,7 @@
           </a>
         </li>
         @endif
-        @if(auth()->guard('admin')->user()->hasPermission('view_footer'))
+        @if(auth()->guard('admin')->user()->hasPermission('view_footer') || auth()->guard('admin')->user()->hasPermission('view_header') )
         <li class="pc-item pc-caption">
           <label>Contents</label>
           <i data-feather="feather"></i>
@@ -32,6 +32,14 @@
           <a href="{{route('admin.footers.index')}}" class="pc-link">
             <span class="pc-micon"> <i data-feather="type"></i></span>
             <span class="pc-mtext">Footers</span>
+          </a>
+        </li>
+       @endif
+        @if(auth()->guard('admin')->user()->hasPermission('view_header'))
+        <li class="pc-item pc-hasmenu">
+          <a href="{{route('admin.headers.index')}}" class="pc-link">
+            <span class="pc-micon"> <i data-feather="type"></i></span>
+            <span class="pc-mtext">Header</span>
           </a>
         </li>
        @endif
